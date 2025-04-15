@@ -1,144 +1,190 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 'use client';
 
-import { useForm, useFieldArray } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useState } from 'react';
 
-const jogadorSchema = z.object({
-  nome: z.string().min(1),
-  posicao: z.string().min(1),
-  numero: z.coerce.number().int().positive(),
-});
-
-const schema = z.object({
-  nome: z.string().min(1, 'Nome do time é obrigatório'),
-  contato: z.string().min(1, 'Contato é obrigatório'),
-  capitao: z.string().min(1, 'Capitão é obrigatório'),
-  aceiteRegulamento: z.literal(true, {
-    errorMap: () => ({ message: 'Você precisa aceitar o regulamento' }),
-  }),
-  jogadores: z.array(jogadorSchema).min(1, 'Adicione pelo menos 1 jogador'),
-});
-
-type FormData = z.infer<typeof schema>;
-
 export default function InscricaoPage() {
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      jogadores: [{ nome: '', posicao: '', numero: 0 }],
-    },
+  const [equipe, setEquipe] = useState({
+    nome: '',
+    capitao: '',
+    contato: '',
+    aceite: false,
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'jogadores',
-  });
+  const [jogadores, setJogadores] = useState([
+    { nome: '', posicao: '', numero: '' },
+  ]);
 
-  const [mensagem, setMensagem] = useState<string | null>(null);
+  const [erro, setErro] = useState('');
 
-  const onSubmit = async (data: FormData) => {
+  function handleAddJogador() {
+    if (jogadores.length >= 10) {
+      setErro('Máximo de 10 jogadores permitido.');
+      return;
+    }
+    setJogadores([...jogadores, { nome: '', posicao: '', numero: '' }]);
+  }
+
+  function handleRemoveJogador(index: number) {
+    const novo = [...jogadores];
+    novo.splice(index, 1);
+    setJogadores(novo);
+  }
+
+  function handleChangeJogador(index: number, field: string, value: string) {
+    const novo = [...jogadores];
+    // @ts-ignore
+    novo[index][field] = value;
+    setJogadores(novo);
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    if (jogadores.length < 8) {
+      setErro('Você deve cadastrar pelo menos 8 jogadores.');
+      return;
+    }
+
+    if (!equipe.aceite) {
+      setErro('Você precisa aceitar o regulamento.');
+      return;
+    }
+
     const res = await fetch('/api/inscricao', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify({ ...equipe, jogadores }),
     });
 
     if (res.ok) {
-      setMensagem('Inscrição enviada com sucesso!');
+      alert('Inscrição enviada com sucesso!');
+      location.reload();
     } else {
       const json = await res.json();
-      setMensagem('Erro: ' + JSON.stringify(json.error));
+      setErro(json.error || 'Erro ao enviar inscrição.');
     }
-  };
+  }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Inscrição de Equipe</h1>
+    <main className="max-w-3xl mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-6 text-blue-700">
+        📋 Inscrição de Equipe
+      </h1>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <input
-          {...register('nome')}
-          placeholder="Nome do time"
-          className="input"
-        />
-        <p className="text-red-500 text-sm">{errors.nome?.message}</p>
+      {erro && <p className="text-red-600 mb-4 text-sm">{erro}</p>}
 
-        <input
-          {...register('capitao')}
-          placeholder="Capitão"
-          className="input"
-        />
-        <p className="text-red-500 text-sm">{errors.capitao?.message}</p>
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-6 bg-white p-6 rounded shadow"
+      >
+        {/* Dados da equipe */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input
+            type="text"
+            placeholder="Nome do Time"
+            value={equipe.nome}
+            onChange={(e) => setEquipe({ ...equipe, nome: e.target.value })}
+            required
+            className="input"
+          />
+          <input
+            type="text"
+            placeholder="Capitão"
+            value={equipe.capitao}
+            onChange={(e) => setEquipe({ ...equipe, capitao: e.target.value })}
+            required
+            className="input"
+          />
+          <input
+            type="text"
+            placeholder="Contato (telefone ou email)"
+            value={equipe.contato}
+            onChange={(e) => setEquipe({ ...equipe, contato: e.target.value })}
+            required
+            className="input md:col-span-2"
+          />
+        </div>
 
-        <input
-          {...register('contato')}
-          placeholder="Contato"
-          className="input"
-        />
-        <p className="text-red-500 text-sm">{errors.contato?.message}</p>
+        {/* Lista de jogadores */}
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold text-blue-600">
+            Jogadores ({jogadores.length}/10)
+          </h2>
 
-        <div>
-          <h2 className="font-semibold mt-4 mb-2">Jogadores</h2>
-
-          {fields.map((field, index) => (
-            <div key={field.id} className="flex gap-2 mb-2">
+          {jogadores.map((jogador, index) => (
+            <div
+              key={index}
+              className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center border-b pb-3"
+            >
               <input
-                {...register(`jogadores.${index}.nome`)}
-                placeholder="Nome"
-                className="input flex-1"
+                type="text"
+                placeholder="Nome do Jogador"
+                value={jogador.nome}
+                onChange={(e) =>
+                  handleChangeJogador(index, 'nome', e.target.value)
+                }
+                required
+                className="input"
               />
               <input
-                {...register(`jogadores.${index}.posicao`)}
+                type="text"
                 placeholder="Posição"
-                className="input flex-1"
+                value={jogador.posicao}
+                onChange={(e) =>
+                  handleChangeJogador(index, 'posicao', e.target.value)
+                }
+                required
+                className="input"
               />
               <input
-                {...register(`jogadores.${index}.numero`)}
-                placeholder="Número"
                 type="number"
-                className="input w-24"
+                placeholder="Número"
+                value={jogador.numero}
+                onChange={(e) =>
+                  handleChangeJogador(index, 'numero', e.target.value)
+                }
+                required
+                min={1}
+                max={99}
+                className="input"
               />
-              <button
-                type="button"
-                onClick={() => remove(index)}
-                className="text-red-500 font-bold"
-              >
-                X
-              </button>
+
+              {jogadores.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => handleRemoveJogador(index)}
+                  className="text-sm text-red-600 hover:underline md:col-span-3 text-left"
+                >
+                  ❌ Remover jogador
+                </button>
+              )}
             </div>
           ))}
 
           <button
             type="button"
-            onClick={() => append({ nome: '', posicao: '', numero: 0 })}
-            className="btn mt-2"
+            onClick={handleAddJogador}
+            className="btn bg-gray-100 border text-sm"
           >
-            + Adicionar Jogador
+            ➕ Adicionar Jogador
           </button>
-
-          <p className="text-red-500 text-sm">{errors.jogadores?.message}</p>
         </div>
 
-        <label className="flex items-center gap-2">
-          <input type="checkbox" {...register('aceiteRegulamento')} />
-          <span>Li e aceito o regulamento oficial</span>
+        {/* Aceite */}
+        <label className="flex items-center space-x-2 text-sm">
+          <input
+            type="checkbox"
+            checked={equipe.aceite}
+            onChange={(e) => setEquipe({ ...equipe, aceite: e.target.checked })}
+            required
+          />
+          <span>Li e aceito o regulamento do torneio.</span>
         </label>
-        <p className="text-red-500 text-sm">
-          {errors.aceiteRegulamento?.message}
-        </p>
 
-        <button type="submit" className="btn-primary">
+        <button type="submit" className="btn-primary w-full">
           Enviar Inscrição
         </button>
       </form>
-
-      {mensagem && <p className="mt-4 font-medium">{mensagem}</p>}
-    </div>
+    </main>
   );
 }
