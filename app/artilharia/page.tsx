@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { Gol } from '@prisma/client';
 
 export default async function ArtilhariaPage() {
   const jogadores = await prisma.jogador.findMany({
@@ -14,7 +15,7 @@ export default async function ArtilhariaPage() {
         id: string;
         nome: string;
         equipe: { nome: string };
-        gols: unknown[];
+        gols: Gol[];
       }) => ({
         id: jogador.id,
         nome: jogador.nome,
@@ -22,7 +23,7 @@ export default async function ArtilhariaPage() {
         gols: jogador.gols.length,
       }),
     )
-    .filter((j) => j.gols > 0)
+    .filter((j: { gols: number }) => j.gols > 0)
     .sort((a, b) => b.gols - a.gols || a.nome.localeCompare(b.nome));
 
   return (
