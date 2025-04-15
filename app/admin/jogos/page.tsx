@@ -25,23 +25,37 @@ export default async function AdminJogosPage() {
         <p className="text-gray-600">Nenhum jogo pendente de resultado.</p>
       ) : (
         <ul className="space-y-4">
-          {jogos.map((jogo) => (
-            <li key={jogo.id} className="border rounded p-4 bg-white shadow-sm">
-              <div className="mb-2 font-semibold">
-                {jogo.equipeCasa.nome} vs {jogo.equipeFora.nome}
-              </div>
-              <div className="text-sm text-gray-600 mb-2">
-                {new Date(jogo.data).toLocaleString()} - {jogo.local}
-              </div>
-
-              <Link
-                href={`/admin/jogos/${jogo.id}/editar`}
-                className="text-blue-600 hover:underline text-sm"
+          {jogos.map(
+            (jogo: {
+              id: string;
+              data: Date;
+              local: string;
+              status: string;
+              golsCasa: number;
+              golsFora: number;
+              equipeCasa: { nome: string };
+              equipeFora: { nome: string };
+            }) => (
+              <li
+                key={jogo.id}
+                className="border rounded p-4 bg-white shadow-sm"
               >
-                ✏️ Editar resultado
-              </Link>
-            </li>
-          ))}
+                <div className="mb-2 font-semibold">
+                  {jogo.equipeCasa.nome} vs {jogo.equipeFora.nome}
+                </div>
+                <div className="text-sm text-gray-600 mb-2">
+                  {new Date(jogo.data).toLocaleString()} - {jogo.local}
+                </div>
+
+                <Link
+                  href={`/admin/jogos/${jogo.id}/editar`}
+                  className="text-blue-600 hover:underline text-sm"
+                >
+                  ✏️ Editar resultado
+                </Link>
+              </li>
+            ),
+          )}
         </ul>
       )}
     </main>
