@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./node_modules/.prisma/client"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum StatusJogo {
+  AGENDADO
+  EM_ANDAMENTO
+  FINALIZADO
+  CANCELADO
+}
+
+enum StatusInscricao {
+  PENDENTE
+  APROVADA
+  REJEITADA
+}
+
+model Equipe {
+  id                String    @id @default(uuid())
+  nome              String
+  slug              String    @unique
+  contato           String
+  capitao           String
+  aceiteRegulamento Boolean   @default(false)
+  jogadores         Jogador[]
+  jogosCasa         Jogo[]    @relation("Casa")
+  jogosFora         Jogo[]    @relation("Fora")
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model Jogador {
+  id        String   @id @default(uuid())
+  nome      String
+  posicao   String
+  numero    Int
+  fotoUrl   String?
+  equipeId  String
+  equipe    Equipe   @relation(fields: [equipeId], references: [id])
+  gols      Gol[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([equipeId, numero])
+}
+
+model Jogo {
+  id           String     @id @default(uuid())
+  equipeCasaId String
+  equipeForaId String
+  golsCasa     Int
+  golsFora     Int
+  data         DateTime
+  local        String
+  status       StatusJogo @default(AGENDADO)
+
+  equipeCasa Equipe   @relation("Casa", fields: [equipeCasaId], references: [id])
+  equipeFora Equipe   @relation("Fora", fields: [equipeForaId], references: [id])
+  gols       Gol[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Gol {
+  id        String   @id @default(uuid())
+  jogadorId String
+  jogoId    String
+  minuto    Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  jogador Jogador @relation(fields: [jogadorId], references: [id])
+  jogo    Jogo    @relation(fields: [jogoId], references: [id])
+}
+
+model Admin {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  senha     String
+  createdAt DateTime   @default(now())
+  LogAdmin  LogAdmin[]
+}
+
+model LogAdmin {
+  id        String   @id @default(uuid())
+  adminId   String
+  acao      String
+  data      DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  admin     Admin    @relation(fields: [adminId], references: [id])
+}
+
+model InscricaoEquipe {
+  id                String             @id @default(uuid())
+  nome              String
+  contato           String
+  capitao           String
+  aceiteRegulamento Boolean            @default(false)
+  status            StatusInscricao    @default(PENDENTE)
+  jogadores         InscricaoJogador[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+model InscricaoJogador {
+  id                String          @id @default(uuid())
+  nome              String
+  posicao           String
+  numero            Int
+  inscricaoEquipeId String
+  inscricaoEquipe   InscricaoEquipe @relation(fields: [inscricaoEquipeId], references: [id])
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
