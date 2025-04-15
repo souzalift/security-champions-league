@@ -30,40 +30,57 @@ export default async function DashboardPage() {
         <p className="text-gray-600">Nenhuma inscrição pendente.</p>
       ) : (
         <div className="space-y-6">
-          {inscricoes.map((inscricao) => (
-            <div
-              key={inscricao.id}
-              className="border rounded p-4 bg-white shadow-sm"
-            >
-              <h2 className="text-lg font-semibold text-blue-800 mb-1">
-                {inscricao.nome}
-              </h2>
-              <p className="text-sm text-gray-600 mb-2">
-                Capitão: {inscricao.capitao} • Contato: {inscricao.contato}
-              </p>
+          {inscricoes.map(
+            (inscricao: {
+              id: string;
+              nome: string;
+              capitao: string;
+              contato: string;
+              status: string;
+              jogadores: {
+                id: string;
+                numero: number;
+                nome: string;
+                posicao: string;
+              }[];
+            }) => (
+              <div
+                key={inscricao.id}
+                className="border rounded p-4 bg-white shadow-sm"
+              >
+                <h2 className="text-lg font-semibold text-blue-800 mb-1">
+                  {inscricao.nome}
+                </h2>
+                <p className="text-sm text-gray-600 mb-2">
+                  Capitão: {inscricao.capitao} • Contato: {inscricao.contato}
+                </p>
 
-              <ul className="mb-3 space-y-1 text-sm">
-                {inscricao.jogadores.map((jogador) => (
-                  <li key={jogador.id}>
-                    #{jogador.numero} - {jogador.nome} ({jogador.posicao})
-                  </li>
-                ))}
-              </ul>
+                <ul className="mb-3 space-y-1 text-sm">
+                  {inscricao.jogadores.map((jogador) => (
+                    <li key={jogador.id}>
+                      #{jogador.numero} - {jogador.nome} ({jogador.posicao})
+                    </li>
+                  ))}
+                </ul>
 
-              <div className="flex gap-3">
-                <form action={`/admin/approve/${inscricao.id}`} method="POST">
-                  <button className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700 text-sm">
-                    ✅ Aprovar
-                  </button>
-                </form>
-                <form action={`/admin/rejeitar/${inscricao.id}`} method="POST">
-                  <button className="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700 text-sm">
-                    ❌ Rejeitar
-                  </button>
-                </form>
+                <div className="flex gap-3">
+                  <form action={`/admin/approve/${inscricao.id}`} method="POST">
+                    <button className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700 text-sm">
+                      ✅ Aprovar
+                    </button>
+                  </form>
+                  <form
+                    action={`/admin/rejeitar/${inscricao.id}`}
+                    method="POST"
+                  >
+                    <button className="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700 text-sm">
+                      ❌ Rejeitar
+                    </button>
+                  </form>
+                </div>
               </div>
-            </div>
-          ))}
+            ),
+          )}
         </div>
       )}
     </main>
