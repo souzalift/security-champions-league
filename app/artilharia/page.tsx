@@ -1,15 +1,7 @@
 import { prisma } from '@/lib/prisma';
-import { Prisma } from '@prisma/client';
-
-type JogadorComEquipeEGols = Prisma.JogadorGetPayload<{
-  include: {
-    equipe: true;
-    gols: true;
-  };
-}>;
 
 export default async function ArtilhariaPage() {
-  const jogadores: JogadorComEquipeEGols[] = await prisma.jogador.findMany({
+  const jogadores = await prisma.jogador.findMany({
     include: {
       equipe: true,
       gols: true,
