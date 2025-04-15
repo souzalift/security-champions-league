@@ -9,12 +9,19 @@ export default async function ArtilhariaPage() {
   });
 
   const artilheiros = jogadores
-    .map((jogador) => ({
-      id: jogador.id,
-      nome: jogador.nome,
-      equipe: jogador.equipe.nome,
-      gols: jogador.gols.length,
-    }))
+    .map(
+      (jogador: {
+        id: string;
+        nome: string;
+        equipe: { nome: string };
+        gols: unknown[];
+      }) => ({
+        id: jogador.id,
+        nome: jogador.nome,
+        equipe: jogador.equipe.nome,
+        gols: jogador.gols.length,
+      }),
+    )
     .filter((j) => j.gols > 0)
     .sort((a, b) => b.gols - a.gols || a.nome.localeCompare(b.nome));
 
