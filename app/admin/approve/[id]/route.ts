@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
+import { InscricaoJogador } from '@prisma/client'
 
 export async function POST(
   req: Request,
@@ -24,11 +25,11 @@ export async function POST(
       slug: inscricao.nome.toLowerCase().replace(/\s+/g, '-'),
       aceiteRegulamento: inscricao.aceiteRegulamento,
       jogadores: {
-        create: inscricao.jogadores.map(j => ({
+        create: inscricao.jogadores.map((j: InscricaoJogador) => ({
           nome: j.nome,
           numero: j.numero,
           posicao: j.posicao,
-        })),
+        }))
       },
     },
   })
