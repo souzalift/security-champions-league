@@ -2,6 +2,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
+import { LogoutButton } from '@/components/LogoutButton';
+import { AdminNavbar } from '@/components/AdminNavbar';
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -18,9 +20,11 @@ export default async function DashboardPage() {
 
   return (
     <main className="max-w-6xl mx-auto px-4 py-8">
+      <AdminNavbar />
       <h1 className="text-2xl font-bold mb-6 text-blue-700">
         Painel Administrativo
       </h1>
+      <LogoutButton />
 
       {inscricoes.length === 0 ? (
         <p className="text-gray-600">Nenhuma inscrição pendente.</p>
