@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 'use client';
 
 import { useState } from 'react';
@@ -16,6 +15,7 @@ export default function InscricaoPage() {
   ]);
 
   const [erro, setErro] = useState('');
+  const [sucesso, setSucesso] = useState(false);
 
   function handleAddJogador() {
     if (jogadores.length >= 10) {
@@ -33,35 +33,51 @@ export default function InscricaoPage() {
 
   function handleChangeJogador(index: number, field: string, value: string) {
     const novo = [...jogadores];
-    // @ts-ignore
-    novo[index][field] = value;
+    novo[index] = {
+      ...novo[index],
+      [field]: field === 'numero' ? String(value) : value,
+    };
     setJogadores(novo);
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setErro('');
+    setSucesso(false);
 
     if (jogadores.length < 8) {
       setErro('Você deve cadastrar pelo menos 8 jogadores.');
       return;
     }
 
-    if (!equipe.aceite) {
-      setErro('Você precisa aceitar o regulamento.');
-      return;
-    }
+    const payload = {
+      ...equipe,
+      aceite: Boolean(equipe.aceite),
+      jogadores: jogadores.map((j) => ({
+        nome: j.nome,
+        posicao: j.posicao,
+        numero: Number(j.numero), // <- agora bate com Prisma (Int)
+      })),
+    };
 
     const res = await fetch('/api/inscricao', {
       method: 'POST',
-      body: JSON.stringify({ ...equipe, jogadores }),
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
 
-    if (res.ok) {
-      alert('Inscrição enviada com sucesso!');
-      location.reload();
+    const data = await res.json();
+
+    if (!res.ok) {
+      const msg =
+        typeof data.error === 'string' ? data.error : 'Erro ao enviar.';
+      setErro(msg);
     } else {
-      const json = await res.json();
-      setErro(json.error || 'Erro ao enviar inscrição.');
+      setSucesso(true);
+      setEquipe({ nome: '', capitao: '', contato: '', aceite: false });
+      setJogadores([{ nome: '', posicao: '', numero: '' }]);
     }
   }
 
@@ -71,41 +87,50 @@ export default function InscricaoPage() {
         📋 Inscrição de Equipe
       </h1>
 
-      {erro && <p className="text-red-600 mb-4 text-sm">{erro}</p>}
+      {erro && (
+        <p className="bg-red-100 text-red-800 text-sm px-3 py-2 rounded mb-4">
+          {erro}
+        </p>
+      )}
+      {sucesso && (
+        <p className="bg-green-100 text-green-800 text-sm px-3 py-2 rounded mb-4">
+          ✅ Inscrição enviada com sucesso!
+        </p>
+      )}
 
       <form
         onSubmit={handleSubmit}
         className="space-y-6 bg-white p-6 rounded shadow"
       >
-        {/* Dados da equipe */}
+        {/* Equipe */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input
             type="text"
+            className="input"
             placeholder="Nome do Time"
             value={equipe.nome}
             onChange={(e) => setEquipe({ ...equipe, nome: e.target.value })}
             required
-            className="input"
           />
           <input
             type="text"
+            className="input"
             placeholder="Capitão"
             value={equipe.capitao}
             onChange={(e) => setEquipe({ ...equipe, capitao: e.target.value })}
             required
-            className="input"
           />
           <input
             type="text"
+            className="input md:col-span-2"
             placeholder="Contato (telefone ou email)"
             value={equipe.contato}
             onChange={(e) => setEquipe({ ...equipe, contato: e.target.value })}
             required
-            className="input md:col-span-2"
           />
         </div>
 
-        {/* Lista de jogadores */}
+        {/* Jogadores */}
         <div className="space-y-4">
           <h2 className="text-lg font-semibold text-blue-600">
             Jogadores ({jogadores.length}/10)
@@ -119,26 +144,27 @@ export default function InscricaoPage() {
               <input
                 type="text"
                 placeholder="Nome do Jogador"
+                className="input"
                 value={jogador.nome}
                 onChange={(e) =>
                   handleChangeJogador(index, 'nome', e.target.value)
                 }
                 required
-                className="input"
               />
               <input
                 type="text"
                 placeholder="Posição"
+                className="input"
                 value={jogador.posicao}
                 onChange={(e) =>
                   handleChangeJogador(index, 'posicao', e.target.value)
                 }
                 required
-                className="input"
               />
               <input
                 type="number"
                 placeholder="Número"
+                className="input"
                 value={jogador.numero}
                 onChange={(e) =>
                   handleChangeJogador(index, 'numero', e.target.value)
@@ -146,9 +172,7 @@ export default function InscricaoPage() {
                 required
                 min={1}
                 max={99}
-                className="input"
               />
-
               {jogadores.length > 1 && (
                 <button
                   type="button"

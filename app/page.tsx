@@ -1,127 +1,117 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { prisma } from '@/lib/prisma';
 
-type Estatistica = {
-  equipeId: string;
-  nome: string;
-  pontos: number;
-  jogos: number;
-  vitorias: number;
-  empates: number;
-  derrotas: number;
-  golsPro: number;
-  golsContra: number;
-  saldo: number;
-};
-
-function calcularClassificacao(jogos: any[], equipes: any[]): Estatistica[] {
-  const mapa = new Map<string, Estatistica>();
-
-  for (const equipe of equipes) {
-    mapa.set(equipe.id, {
-      equipeId: equipe.id,
-      nome: equipe.nome,
-      pontos: 0,
-      jogos: 0,
-      vitorias: 0,
-      empates: 0,
-      derrotas: 0,
-      golsPro: 0,
-      golsContra: 0,
-      saldo: 0,
-    });
-  }
-
-  for (const jogo of jogos) {
-    if (!jogo.status || jogo.status !== 'FINALIZADO') continue;
-
-    const casa = mapa.get(jogo.equipeCasaId)!;
-    const fora = mapa.get(jogo.equipeForaId)!;
-
-    casa.jogos++;
-    fora.jogos++;
-
-    casa.golsPro += jogo.golsCasa;
-    casa.golsContra += jogo.golsFora;
-
-    fora.golsPro += jogo.golsFora;
-    fora.golsContra += jogo.golsCasa;
-
-    if (jogo.golsCasa > jogo.golsFora) {
-      casa.vitorias++;
-      casa.pontos += 3;
-      fora.derrotas++;
-    } else if (jogo.golsCasa < jogo.golsFora) {
-      fora.vitorias++;
-      fora.pontos += 3;
-      casa.derrotas++;
-    } else {
-      casa.empates++;
-      fora.empates++;
-      casa.pontos += 1;
-      fora.pontos += 1;
-    }
-  }
-
-  const tabela = Array.from(mapa.values());
-
-  tabela.forEach((e) => {
-    e.saldo = e.golsPro - e.golsContra;
+export default async function HomePage() {
+  const equipes = await prisma.equipe.findMany({
+    include: {
+      jogosCasa: true,
+      jogosFora: true,
+    },
   });
 
-  return tabela.sort((a, b) => {
-    if (b.pontos !== a.pontos) return b.pontos - a.pontos;
-    if (b.saldo !== a.saldo) return b.saldo - a.saldo;
-    if (b.golsPro !== a.golsPro) return b.golsPro - a.golsPro;
-    return a.nome.localeCompare(b.nome);
-  });
-}
+  const tabela = equipes
+    .map((equipe) => {
+      const todosJogos = [...equipe.jogosCasa, ...equipe.jogosFora].filter(
+        (j) => j.status === 'FINALIZADO',
+      );
 
-export default async function Page() {
-  const equipes = await prisma.equipe.findMany();
-  const jogos = await prisma.jogo.findMany({ where: { status: 'FINALIZADO' } });
+      let pontos = 0;
+      let v = 0,
+        e = 0,
+        d = 0,
+        gp = 0,
+        gc = 0;
 
-  const classificacao = calcularClassificacao(jogos, equipes);
+      todosJogos.forEach((jogo) => {
+        const isCasa = jogo.equipeCasaId === equipe.id;
+        const golsPro = isCasa ? jogo.golsCasa : jogo.golsFora;
+        const golsContra = isCasa ? jogo.golsFora : jogo.golsCasa;
+
+        gp += golsPro;
+        gc += golsContra;
+
+        if (golsPro > golsContra) {
+          pontos += 3;
+          v += 1;
+        } else if (golsPro === golsContra) {
+          pontos += 1;
+          e += 1;
+        } else {
+          d += 1;
+        }
+      });
+
+      return {
+        id: equipe.id,
+        nome: equipe.nome,
+        slug: equipe.slug,
+        jogos: todosJogos.length,
+        pontos,
+        v,
+        e,
+        d,
+        gp,
+        gc,
+        sg: gp - gc,
+      };
+    })
+    .sort(
+      (a, b) =>
+        b.pontos - a.pontos ||
+        b.sg - a.sg ||
+        b.gp - a.gp ||
+        a.nome.localeCompare(b.nome),
+    );
 
   return (
-    <main className="max-w-5xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Classificação Geral</h1>
+    <main className="max-w-4xl mx-auto px-4 py-10">
+      <h1 className="text-2xl font-bold text-blue-800 mb-6 text-center">
+        🏆 Classificação Geral
+      </h1>
+
       <div className="overflow-x-auto">
-        <table className="min-w-full border border-gray-300">
-          <thead className="bg-gray-100">
+        <table className="w-full text-sm text-left border rounded shadow-sm overflow-hidden">
+          <thead className="bg-blue-600 text-white text-xs">
             <tr>
-              <th className="p-2">#</th>
-              <th className="p-2 text-left">Equipe</th>
-              <th className="p-2">P</th>
-              <th className="p-2">J</th>
-              <th className="p-2">V</th>
-              <th className="p-2">E</th>
-              <th className="p-2">D</th>
-              <th className="p-2">GP</th>
-              <th className="p-2">GC</th>
-              <th className="p-2">SG</th>
+              <th className="px-4 py-2">#</th>
+              <th className="px-4 py-2">Equipe</th>
+              <th className="px-2 py-2 text-center">Pts</th>
+              <th className="px-2 py-2 text-center">J</th>
+              <th className="px-2 py-2 text-center">V</th>
+              <th className="px-2 py-2 text-center">E</th>
+              <th className="px-2 py-2 text-center">D</th>
+              <th className="px-2 py-2 text-center">GP</th>
+              <th className="px-2 py-2 text-center">GC</th>
+              <th className="px-2 py-2 text-center">SG</th>
             </tr>
           </thead>
-          <tbody>
-            {classificacao.map((equipe, idx) => (
-              <tr key={equipe.equipeId} className="text-center border-t">
-                <td className="p-2">{idx + 1}</td>
-                <td className="p-2 text-left">{equipe.nome}</td>
-                <td className="p-2">{equipe.pontos}</td>
-                <td className="p-2">{equipe.jogos}</td>
-                <td className="p-2">{equipe.vitorias}</td>
-                <td className="p-2">{equipe.empates}</td>
-                <td className="p-2">{equipe.derrotas}</td>
-                <td className="p-2">{equipe.golsPro}</td>
-                <td className="p-2">{equipe.golsContra}</td>
-                <td className="p-2">{equipe.saldo}</td>
+          <tbody className="bg-white text-xs md:text-sm">
+            {tabela.map((time, index) => (
+              <tr
+                key={time.id}
+                className={index === 0 ? 'bg-yellow-50 font-bold' : ''}
+              >
+                <td className="px-4 py-2 text-gray-600">{index + 1}</td>
+                <td className="px-4 py-2">{time.nome}</td>
+                <td className="px-2 py-2 text-center">{time.pontos}</td>
+                <td className="px-2 py-2 text-center">{time.jogos}</td>
+                <td className="px-2 py-2 text-center">{time.v}</td>
+                <td className="px-2 py-2 text-center">{time.e}</td>
+                <td className="px-2 py-2 text-center">{time.d}</td>
+                <td className="px-2 py-2 text-center">{time.gp}</td>
+                <td className="px-2 py-2 text-center">{time.gc}</td>
+                <td className="px-2 py-2 text-center">{time.sg}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {tabela.every((t) => t.jogos === 0) && (
+        <p className="text-center text-gray-500 mt-6">
+          Nenhum jogo finalizado ainda. Acompanhe aqui os resultados em breve!
+        </p>
+      )}
     </main>
   );
 }
-// Este código é uma página Next.js que exibe a classificação geral de um campeonato.
-// Ele busca os dados das equipes e jogos finalizados do banco de dados usando Prisma.
