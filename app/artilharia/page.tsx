@@ -23,7 +23,10 @@ export default async function ArtilhariaPage() {
       }),
     )
     .filter((j: { gols: number }) => j.gols > 0)
-    .sort((a, b) => b.gols - a.gols || a.nome.localeCompare(b.nome));
+    .sort(
+      (a: { gols: number; nome: string }, b: { gols: number; nome: string }) =>
+        b.gols - a.gols || a.nome.localeCompare(b.nome),
+    );
 
   return (
     <main className="max-w-3xl mx-auto px-4 py-10">
