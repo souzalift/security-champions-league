@@ -18,26 +18,6 @@ export default async function DashboardPage() {
     orderBy: { createdAt: 'asc' },
   });
 
-  async function reverterAprovacao(id: string) {
-    const confirmado = confirm(
-      'Tem certeza que deseja reverter esta aprovação? Isso irá excluir a equipe criada.',
-    );
-    if (!confirmado) return;
-
-    const res = await fetch(`/api/admin/reverter/${id}`, {
-      method: 'DELETE',
-    });
-
-    const json = await res.json();
-
-    if (res.ok) {
-      alert('✅ Equipe removida e inscrição revertida com sucesso.');
-      location.reload();
-    } else {
-      alert(json.error || 'Erro ao reverter inscrição.');
-    }
-  }
-
   return (
     <main className="max-w-6xl mx-auto px-4 py-8">
       <AdminNavbar />
@@ -80,15 +60,6 @@ export default async function DashboardPage() {
                   <button className="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700 text-sm">
                     ❌ Rejeitar
                   </button>
-
-                  {inscricao.status === 'APROVADA' && (
-                    <button
-                      onClick={() => reverterAprovacao(inscricao.id)}
-                      className="text-red-600 text-sm hover:underline"
-                    >
-                      🔄 Reverter aprovação
-                    </button>
-                  )}
                 </form>
               </div>
             </div>
