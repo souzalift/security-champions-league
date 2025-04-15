@@ -1,5 +1,4 @@
 import { prisma } from '@/lib/prisma';
-import { Gol } from '@prisma/client';
 
 export default async function ArtilhariaPage() {
   const jogadores = await prisma.jogador.findMany({
@@ -15,7 +14,7 @@ export default async function ArtilhariaPage() {
         id: string;
         nome: string;
         equipe: { nome: string };
-        gols: Gol[];
+        gols: unknown[];
       }) => ({
         id: jogador.id,
         nome: jogador.nome,
