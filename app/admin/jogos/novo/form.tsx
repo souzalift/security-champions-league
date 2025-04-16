@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useState } from 'react';
@@ -26,6 +27,7 @@ export default function FormNovoJogo({ equipes }: Props) {
 
     const res = await fetch('/api/jogos', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         equipeCasaId: casa,
         equipeForaId: fora,
@@ -33,6 +35,8 @@ export default function FormNovoJogo({ equipes }: Props) {
         local,
       }),
     });
+
+    const json = await res.json();
 
     if (res.ok) {
       router.push('/jogos');
