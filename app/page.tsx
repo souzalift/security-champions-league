@@ -10,53 +10,84 @@ export default async function HomePage() {
   });
 
   const tabela = equipes
-    .map((equipe) => {
-      const todosJogos = [...equipe.jogosCasa, ...equipe.jogosFora].filter(
-        (j) => j.status === 'FINALIZADO',
-      );
+    .map(
+      (equipe: {
+        id: string;
+        nome: string;
+        slug: string;
+        jogosCasa: {
+          status: string;
+          equipeCasaId: string;
+          golsCasa: number;
+          golsFora: number;
+        }[];
+        jogosFora: {
+          status: string;
+          equipeCasaId: string;
+          golsCasa: number;
+          golsFora: number;
+        }[];
+      }) => {
+        const todosJogos = [...equipe.jogosCasa, ...equipe.jogosFora].filter(
+          (j) => j.status === 'FINALIZADO',
+        );
 
-      let pontos = 0;
-      let v = 0,
-        e = 0,
-        d = 0,
-        gp = 0,
-        gc = 0;
+        let pontos = 0;
+        let v = 0,
+          e = 0,
+          d = 0,
+          gp = 0,
+          gc = 0;
 
-      todosJogos.forEach((jogo) => {
-        const isCasa = jogo.equipeCasaId === equipe.id;
-        const golsPro = isCasa ? jogo.golsCasa : jogo.golsFora;
-        const golsContra = isCasa ? jogo.golsFora : jogo.golsCasa;
+        todosJogos.forEach((jogo) => {
+          const isCasa = jogo.equipeCasaId === equipe.id;
+          const golsPro = isCasa ? jogo.golsCasa : jogo.golsFora;
+          const golsContra = isCasa ? jogo.golsFora : jogo.golsCasa;
 
-        gp += golsPro;
-        gc += golsContra;
+          gp += golsPro;
+          gc += golsContra;
 
-        if (golsPro > golsContra) {
-          pontos += 3;
-          v += 1;
-        } else if (golsPro === golsContra) {
-          pontos += 1;
-          e += 1;
-        } else {
-          d += 1;
-        }
-      });
+          if (golsPro > golsContra) {
+            pontos += 3;
+            v += 1;
+          } else if (golsPro === golsContra) {
+            pontos += 1;
+            e += 1;
+          } else {
+            d += 1;
+          }
+        });
 
-      return {
-        id: equipe.id,
-        nome: equipe.nome,
-        slug: equipe.slug,
-        jogos: todosJogos.length,
-        pontos,
-        v,
-        e,
-        d,
-        gp,
-        gc,
-        sg: gp - gc,
-      };
-    })
+        return {
+          id: equipe.id,
+          nome: equipe.nome,
+          slug: equipe.slug,
+          jogos: todosJogos.length,
+          pontos,
+          v,
+          e,
+          d,
+          gp,
+          gc,
+          sg: gp - gc,
+        };
+      },
+    )
     .sort(
-      (a, b) =>
+      (
+        a: {
+          pontos: number;
+          sg: number;
+          gp: number;
+          nome: string;
+        },
+        b: {
+          pontos: number;
+          sg: number;
+          gp: number;
+          nome: string;
+        },
+      ) =>
         b.pontos - a.pontos ||
         b.sg - a.sg ||
         b.gp - a.gp ||
@@ -86,28 +117,45 @@ export default async function HomePage() {
             </tr>
           </thead>
           <tbody className="bg-white text-xs md:text-sm">
-            {tabela.map((time, index) => (
-              <tr
-                key={time.id}
-                className={index === 0 ? 'bg-yellow-50 font-bold' : ''}
-              >
-                <td className="px-4 py-2 text-gray-600">{index + 1}</td>
-                <td className="px-4 py-2">{time.nome}</td>
-                <td className="px-2 py-2 text-center">{time.pontos}</td>
-                <td className="px-2 py-2 text-center">{time.jogos}</td>
-                <td className="px-2 py-2 text-center">{time.v}</td>
-                <td className="px-2 py-2 text-center">{time.e}</td>
-                <td className="px-2 py-2 text-center">{time.d}</td>
-                <td className="px-2 py-2 text-center">{time.gp}</td>
-                <td className="px-2 py-2 text-center">{time.gc}</td>
-                <td className="px-2 py-2 text-center">{time.sg}</td>
-              </tr>
-            ))}
+            {tabela.map(
+              (
+                time: {
+                  id: string;
+                  nome: string;
+                  slug: string;
+                  jogos: number;
+                  pontos: number;
+                  v: number;
+                  e: number;
+                  d: number;
+                  gp: number;
+                  gc: number;
+                  sg: number;
+                },
+                index: number,
+              ) => (
+                <tr
+                  key={time.id}
+                  className={index === 0 ? 'bg-yellow-50 font-bold' : ''}
+                >
+                  <td className="px-4 py-2 text-gray-600">{index + 1}</td>
+                  <td className="px-4 py-2">{time.nome}</td>
+                  <td className="px-2 py-2 text-center">{time.pontos}</td>
+                  <td className="px-2 py-2 text-center">{time.jogos}</td>
+                  <td className="px-2 py-2 text-center">{time.v}</td>
+                  <td className="px-2 py-2 text-center">{time.e}</td>
+                  <td className="px-2 py-2 text-center">{time.d}</td>
+                  <td className="px-2 py-2 text-center">{time.gp}</td>
+                  <td className="px-2 py-2 text-center">{time.gc}</td>
+                  <td className="px-2 py-2 text-center">{time.sg}</td>
+                </tr>
+              ),
+            )}
           </tbody>
         </table>
       </div>
 
-      {tabela.every((t) => t.jogos === 0) && (
+      {tabela.every((t: { jogos: number }) => t.jogos === 0) && (
         <p className="text-center text-gray-500 mt-6">
           Nenhum jogo finalizado ainda. Acompanhe aqui os resultados em breve!
         </p>
