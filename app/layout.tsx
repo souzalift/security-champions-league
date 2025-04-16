@@ -18,10 +18,11 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={inter.className}>
-        <header className="bg-blue-700 text-white">
+        <header className="bg-blue-700 text-white sticky top-0 z-50 shadow-md backdrop-blur-sm">
           <div className="max-w-6xl mx-auto px-4 py-4">
-            <h1 className="text-xl font-bold">
-              Security Champions League 🛡️⚽
+            <h1 className="text-2xl font-bold tracking-wide text-center">
+              <span className="text-black">⚽</span> Security Champions League
+              ⚽
             </h1>
           </div>
           <NavBar />
