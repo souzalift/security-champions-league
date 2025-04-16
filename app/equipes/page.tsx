@@ -15,15 +15,26 @@ export default async function EquipesPage() {
     },
   });
 
+  const transformedEquipes = equipes.map((equipe) => ({
+    ...equipe,
+    jogadores: equipe.jogadores.map((jogador) => ({
+      id: jogador.id,
+      nome: jogador.nome,
+      numero: jogador.numero,
+      posicao: jogador.posicao,
+      fotoUrl: jogador.fotoUrl || undefined, // Transform null to undefined
+    })),
+  }));
+
   return (
     <main className="max-w-6xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">👥 Equipes Participantes</h1>
 
-      {equipes.length === 0 ? (
+      {transformedEquipes.length === 0 ? (
         <p className="text-gray-500">Nenhuma equipe cadastrada ainda.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {equipes.map(
+          {transformedEquipes.map(
             (equipe: {
               id: string;
               nome: string;
