@@ -50,16 +50,26 @@ export default async function ArtilhariaPage() {
               </tr>
             </thead>
             <tbody className="bg-white">
-              {artilheiros.map((jogador, idx) => (
-                <tr key={jogador.id} className="border-t hover:bg-gray-50">
-                  <td className="p-2">{idx + 1}</td>
-                  <td className="p-2 font-medium">{jogador.nome}</td>
-                  <td className="p-2 text-gray-600">{jogador.equipe}</td>
-                  <td className="p-2 text-center font-bold text-blue-700">
-                    {jogador.gols}
-                  </td>
-                </tr>
-              ))}
+              {artilheiros.map(
+                (
+                  jogador: {
+                    id: string;
+                    nome: string;
+                    equipe: string;
+                    gols: number;
+                  },
+                  idx: number,
+                ) => (
+                  <tr key={jogador.id} className="border-t hover:bg-gray-50">
+                    <td className="p-2">{idx + 1}</td>
+                    <td className="p-2 font-medium">{jogador.nome}</td>
+                    <td className="p-2 text-gray-600">{jogador.equipe}</td>
+                    <td className="p-2 text-center font-bold text-blue-700">
+                      {jogador.gols}
+                    </td>
+                  </tr>
+                ),
+              )}
             </tbody>
           </table>
         </div>
