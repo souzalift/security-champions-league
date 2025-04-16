@@ -56,7 +56,7 @@ export default function InscricaoPage() {
       jogadores: jogadores.map((j) => ({
         nome: j.nome,
         posicao: j.posicao,
-        numero: Number(j.numero), // <- agora bate com Prisma (Int)
+        numero: Number(j.numero),
       })),
     };
 
@@ -151,46 +151,55 @@ export default function InscricaoPage() {
                 }
                 required
               />
-              <input
-                type="text"
-                placeholder="Posição"
+              <select
+                aria-label="Posição do jogador"
                 className="input"
                 value={jogador.posicao}
                 onChange={(e) =>
                   handleChangeJogador(index, 'posicao', e.target.value)
                 }
                 required
-              />
-              <input
-                type="number"
-                placeholder="Número"
-                className="input"
-                value={jogador.numero}
-                onChange={(e) =>
-                  handleChangeJogador(index, 'numero', e.target.value)
-                }
-                required
-                min={1}
-                max={99}
-              />
-              {jogadores.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => handleRemoveJogador(index)}
-                  className="text-sm text-red-600 hover:underline md:col-span-3 text-left"
-                >
-                  ❌ Remover jogador
-                </button>
-              )}
+              >
+                <option value="">Posição</option>
+                <option value="Goleiro">Goleiro</option>
+                <option value="Fixo">Fixo</option>
+                <option value="Pivô">Pivô</option>
+                <option value="Ala">Ala</option>
+              </select>
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  placeholder="Número"
+                  className="input"
+                  value={jogador.numero}
+                  onChange={(e) =>
+                    handleChangeJogador(index, 'numero', e.target.value)
+                  }
+                  required
+                  min={1}
+                  max={99}
+                />
+                {jogadores.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveJogador(index)}
+                    className="text-red-600 hover:text-red-800"
+                    title="Remover jogador"
+                  >
+                    ❌
+                  </button>
+                )}
+              </div>
             </div>
           ))}
 
           <button
             type="button"
             onClick={handleAddJogador}
-            className="btn bg-gray-100 border text-sm"
+            className="text-blue-600 hover:text-blue-800 "
+            title="Adicionar jogador"
           >
-            ➕ Adicionar Jogador
+            ➕
           </button>
         </div>
 
@@ -202,7 +211,18 @@ export default function InscricaoPage() {
             onChange={(e) => setEquipe({ ...equipe, aceite: e.target.checked })}
             required
           />
-          <span>Li e aceito o regulamento do torneio.</span>
+          <span>
+            Li e aceito o{' '}
+            <a
+              href="/regulamento.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 underline"
+            >
+              regulamento do torneio
+            </a>
+            .
+          </span>
         </label>
 
         <button type="submit" className="btn-primary w-full">
