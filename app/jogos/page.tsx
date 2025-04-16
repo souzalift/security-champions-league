@@ -28,15 +28,15 @@ export default async function JogosPage() {
     format(data, "dd 'de' MMMM 'às' HH:mm", { locale: ptBR });
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Jogos do Torneio</h1>
+    <main className="flex flex-col items-center justify-center max-w-4xl mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-6 text-center">Jogos do Torneio</h1>
 
-      <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-4 text-blue-600">
+      <section className="mb-10 w-full">
+        <h2 className="text-xl font-semibold mb-4 text-blue-600 text-center">
           📍 Próximos Jogos
         </h2>
         {proximos.length === 0 ? (
-          <p className="text-gray-500">Nenhum jogo agendado.</p>
+          <p className="text-gray-500 text-center">Nenhum jogo agendado.</p>
         ) : (
           <ul className="space-y-4">
             {proximos.map(
@@ -48,10 +48,10 @@ export default async function JogosPage() {
                 local: string;
               }) => (
                 <li key={jogo.id} className="border p-4 rounded shadow-sm">
-                  <div className="text-lg font-semibold">
+                  <div className="text-lg font-semibold text-center">
                     {jogo.equipeCasa.nome} vs {jogo.equipeFora.nome}
                   </div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-gray-600 text-center">
                     {formatarData(jogo.data)} — {jogo.local}
                   </div>
                 </li>
@@ -61,12 +61,14 @@ export default async function JogosPage() {
         )}
       </section>
 
-      <section>
-        <h2 className="text-xl font-semibold mb-4 text-green-600">
+      <section className="w-full">
+        <h2 className="text-xl font-semibold mb-4 text-green-600 text-center">
           ✅ Jogos Finalizados
         </h2>
         {finalizados.length === 0 ? (
-          <p className="text-gray-500">Nenhum jogo finalizado ainda.</p>
+          <p className="text-gray-500 text-center">
+            Nenhum jogo finalizado ainda.
+          </p>
         ) : (
           <ul className="space-y-4">
             {finalizados.map(
@@ -83,7 +85,7 @@ export default async function JogosPage() {
                   key={jogo.id}
                   className="border p-4 rounded shadow-sm bg-gray-50"
                 >
-                  <div className="text-lg font-semibold">
+                  <div className="text-lg font-semibold text-center">
                     {jogo.equipeCasa.nome}{' '}
                     <span className="font-bold text-blue-700">
                       {jogo.golsCasa}
@@ -94,7 +96,7 @@ export default async function JogosPage() {
                     </span>{' '}
                     {jogo.equipeFora.nome}
                   </div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-gray-600 text-center">
                     {formatarData(jogo.data)} — {jogo.local}
                   </div>
                 </li>

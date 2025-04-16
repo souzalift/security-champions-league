@@ -2,43 +2,74 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import clsx from 'clsx';
-import { signOut } from 'next-auth/react';
+import { useState } from 'react';
+import { Menu, X } from 'lucide-react';
 
 const links = [
   { href: '/admin/dashboard', label: 'Inscrições' },
-  { href: '/admin/jogos', label: 'Resultados' },
+  { href: '/admin/equipes-aprovadas', label: 'Equipes Aprovadas' },
+  { href: '/admin/jogos', label: 'Jogos' },
   { href: '/admin/jogos/novo', label: '+ Novo Jogo' },
 ];
 
 export function AdminNavbar() {
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
 
   return (
-    <nav className="bg-gray-800 text-white px-4 py-3 shadow">
-      <div className="max-w-6xl mx-auto flex items-center justify-between">
-        <div className="flex gap-4">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={clsx(
-                'text-sm hover:underline',
-                pathname === link.href ? 'font-semibold text-yellow-300' : '',
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-
-        <button
-          onClick={() => signOut({ callbackUrl: '/admin/login' })}
-          className="text-sm text-red-300 hover:text-red-500"
+    <nav className="bg-gray-900 text-white sticky top-0 z-50">
+      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+        <Link
+          href="/admin/dashboard"
+          className="text-lg font-bold tracking-wide text-yellow-300"
         >
-          Sair
+          🛡️ Admin Panel
+        </Link>
+
+        {/* Desktop links */}
+        <ul className="hidden md:flex space-x-6 text-sm font-medium">
+          {links.map((link) => (
+            <li key={link.href}>
+              <Link
+                href={link.href}
+                className={`hover:text-yellow-400 ${
+                  pathname === link.href ? 'underline text-yellow-300' : ''
+                }`}
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/* Mobile toggle */}
+        <button
+          className="md:hidden"
+          onClick={() => setOpen((prev) => !prev)}
+          aria-label="Abrir menu"
+        >
+          {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
+
+      {/* Mobile menu */}
+      {open && (
+        <ul className="md:hidden px-4 pb-4 space-y-2 text-sm bg-gray-800">
+          {links.map((link) => (
+            <li key={link.href}>
+              <Link
+                href={link.href}
+                className={`block py-2 px-2 rounded hover:bg-gray-700 ${
+                  pathname === link.href ? 'bg-gray-700 text-yellow-300' : ''
+                }`}
+                onClick={() => setOpen(false)}
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </nav>
   );
 }

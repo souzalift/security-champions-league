@@ -95,7 +95,7 @@ export default async function HomePage() {
     );
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-10">
+    <main className="max-w-6xl mx-auto px-4 py-10">
       <h1 className="text-2xl font-bold text-blue-800 mb-6 text-center">
         🏆 Classificação Geral
       </h1>

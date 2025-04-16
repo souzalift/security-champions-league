@@ -1,4 +1,3 @@
-import { AdminNavbar } from '@/components/AdminNavbar';
 import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 
@@ -16,7 +15,6 @@ export default async function AdminJogosPage() {
 
   return (
     <main className="max-w-4xl mx-auto px-4 py-8">
-      <AdminNavbar />
       <h1 className="text-xl font-bold mb-6 text-blue-700">
         🛠️ Atualizar Resultados
       </h1>
