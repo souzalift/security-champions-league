@@ -16,10 +16,11 @@ export default async function JogosPage() {
   const agora = new Date();
 
   const proximos = jogos.filter(
-    (j) => j.status === 'AGENDADO' || j.data > agora,
+    (j: { status: string; data: Date }) =>
+      j.status === 'AGENDADO' || j.data > agora,
   );
   const finalizados = jogos.filter(
-    (j) =>
+    (j: { status: string; data: Date; golsCasa: number | null }) =>
       j.status === 'FINALIZADO' || (j.data <= agora && j.golsCasa !== null),
   );
 
@@ -38,16 +39,24 @@ export default async function JogosPage() {
           <p className="text-gray-500">Nenhum jogo agendado.</p>
         ) : (
           <ul className="space-y-4">
-            {proximos.map((jogo) => (
-              <li key={jogo.id} className="border p-4 rounded shadow-sm">
-                <div className="text-lg font-semibold">
-                  {jogo.equipeCasa.nome} vs {jogo.equipeFora.nome}
-                </div>
-                <div className="text-sm text-gray-600">
-                  {formatarData(jogo.data)} — {jogo.local}
-                </div>
-              </li>
-            ))}
+            {proximos.map(
+              (jogo: {
+                id: string;
+                equipeCasa: { nome: string };
+                equipeFora: { nome: string };
+                data: Date;
+                local: string;
+              }) => (
+                <li key={jogo.id} className="border p-4 rounded shadow-sm">
+                  <div className="text-lg font-semibold">
+                    {jogo.equipeCasa.nome} vs {jogo.equipeFora.nome}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {formatarData(jogo.data)} — {jogo.local}
+                  </div>
+                </li>
+              ),
+            )}
           </ul>
         )}
       </section>
@@ -60,27 +69,37 @@ export default async function JogosPage() {
           <p className="text-gray-500">Nenhum jogo finalizado ainda.</p>
         ) : (
           <ul className="space-y-4">
-            {finalizados.map((jogo) => (
-              <li
-                key={jogo.id}
-                className="border p-4 rounded shadow-sm bg-gray-50"
-              >
-                <div className="text-lg font-semibold">
-                  {jogo.equipeCasa.nome}{' '}
-                  <span className="font-bold text-blue-700">
-                    {jogo.golsCasa}
-                  </span>{' '}
-                  vs{' '}
-                  <span className="font-bold text-red-700">
-                    {jogo.golsFora}
-                  </span>{' '}
-                  {jogo.equipeFora.nome}
-                </div>
-                <div className="text-sm text-gray-600">
-                  {formatarData(jogo.data)} — {jogo.local}
-                </div>
-              </li>
-            ))}
+            {finalizados.map(
+              (jogo: {
+                id: string;
+                equipeCasa: { nome: string };
+                equipeFora: { nome: string };
+                golsCasa: number;
+                golsFora: number;
+                data: Date;
+                local: string;
+              }) => (
+                <li
+                  key={jogo.id}
+                  className="border p-4 rounded shadow-sm bg-gray-50"
+                >
+                  <div className="text-lg font-semibold">
+                    {jogo.equipeCasa.nome}{' '}
+                    <span className="font-bold text-blue-700">
+                      {jogo.golsCasa}
+                    </span>{' '}
+                    vs{' '}
+                    <span className="font-bold text-red-700">
+                      {jogo.golsFora}
+                    </span>{' '}
+                    {jogo.equipeFora.nome}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {formatarData(jogo.data)} — {jogo.local}
+                  </div>
+                </li>
+              ),
+            )}
           </ul>
         )}
       </section>
