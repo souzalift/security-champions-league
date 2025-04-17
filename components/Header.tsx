@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image'; // Importando o componente Image
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
@@ -26,8 +27,18 @@ export function Header() {
   return (
     <header className="bg-blue-700 text-white shadow-sm">
       <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-4">
-        <Link href="/" className="text-lg font-bold tracking-wide">
-          🛡️ Security Champions League
+        <Link
+          href="/"
+          className="text-lg font-bold tracking-wide flex items-center gap-2"
+        >
+          <Image
+            src="/logo.png" // Substitua pelo caminho correto da sua logo
+            alt="Logo Security Champions League"
+            width={216} // Largura da imagem
+            height={143} // Altura da imagem
+            className="h-8 w-auto" // Classes adicionais para estilização
+          />
+          Security Champions League
         </Link>
 
         {/* Desktop Nav */}
