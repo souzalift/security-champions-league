@@ -9,17 +9,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { UserPlus2, User } from 'lucide-react';
+import { ChevronDown, User } from 'lucide-react';
 
 export function AdminHeader() {
   const { data: session } = useSession();
-
-  const links = [
-    { href: '/admin/dashboard', label: 'Dashboard' },
-    { href: '/admin/equipes-aprovadas', label: 'Equipes' },
-    { href: '/admin/jogos', label: 'Jogos' },
-    { href: '/admin/jogos/novo', label: 'Novo Jogo' },
-  ];
 
   return (
     <header className="bg-gray-900 text-white py-4 shadow-sm">
@@ -29,16 +22,35 @@ export function AdminHeader() {
         </Link>
 
         <nav className="flex gap-6 text-sm items-center">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="hover:underline transition"
-            >
-              {link.label}
-            </Link>
-          ))}
+          <Link href="/admin/dashboard" className="hover:underline transition">
+            Dashboard
+          </Link>
 
+          <Link
+            href="/admin/equipes-aprovadas"
+            className="hover:underline transition"
+          >
+            Equipes
+          </Link>
+
+          {/* Dropdown de Jogos */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="p-0 gap-1 text-sm font-normal">
+                Jogos <ChevronDown className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem asChild>
+                <Link href="/admin/jogos">Ver Jogos</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/admin/jogos/novo">Adicionar Jogo</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Usuário logado */}
           {session?.user && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
