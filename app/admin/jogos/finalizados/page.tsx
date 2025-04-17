@@ -1,11 +1,10 @@
 import { prisma } from '@/lib/prisma';
-import { BotaoEditarJogo } from '@/components/BotaoEditarJogo';
-import { BotaoExcluirJogo } from '@/components/BotaoExcluirJogo';
+import Link from 'next/link';
 
 export default async function AdminJogosPage() {
   const jogos = await prisma.jogo.findMany({
     where: {
-      status: { in: ['AGENDADO', 'EM_ANDAMENTO'] },
+      status: { in: ['FINALIZADO'] },
     },
     include: {
       equipeCasa: true,
@@ -17,7 +16,7 @@ export default async function AdminJogosPage() {
   return (
     <main className="max-w-4xl mx-auto px-4 py-8">
       <h1 className="text-xl font-bold mb-6 text-blue-700">
-        🛠️ Atualizar Resultados
+        🛠️ Editar Partidas Finalizadas
       </h1>
 
       {jogos.length === 0 ? (
@@ -46,13 +45,12 @@ export default async function AdminJogosPage() {
                   {new Date(jogo.data).toLocaleString()} - {jogo.local}
                 </div>
 
-                <div className="flex gap-2">
-                  <BotaoEditarJogo id={jogo.id} />
-
-                  {jogo.status === 'AGENDADO' && (
-                    <BotaoExcluirJogo id={jogo.id} />
-                  )}
-                </div>
+                <Link
+                  href={`/admin/jogos/${jogo.id}/editar`}
+                  className="text-blue-600 hover:underline text-sm"
+                >
+                  ✏️ Editar resultado
+                </Link>
               </li>
             ),
           )}
