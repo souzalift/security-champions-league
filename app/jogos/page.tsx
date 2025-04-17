@@ -66,7 +66,7 @@ export default async function JogosPage() {
                       {formatarData(jogo.data)} — {jogo.local}
                     </p>
                   </div>
-                  <Badge variant="outline">{jogo.status}</Badge>
+                  <Badge>{jogo.status}</Badge>
                 </div>
               </li>
             ))}
@@ -127,7 +127,7 @@ export default async function JogosPage() {
                       />
                     </div>
                   </div>
-                  <Badge variant="default">{jogo.status}</Badge>
+                  <Badge>{jogo.status}</Badge>
                 </div>
               </li>
             ))}
