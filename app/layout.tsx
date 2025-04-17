@@ -19,14 +19,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" className={inter.className}>
-      <body className="flex flex-col min-h-screen">
+      <body className="min-h-screen flex flex-col">
         <AuthProvider>
           <Header />
           <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-8">
             {children}
           </main>
+          <Footer />
         </AuthProvider>
-        <Footer />
       </body>
     </html>
   );
