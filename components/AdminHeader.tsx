@@ -47,6 +47,9 @@ export function AdminHeader() {
               <DropdownMenuItem asChild>
                 <Link href="/admin/jogos/novo">Adicionar Jogo</Link>
               </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/admin/jogos/finalizados">Finalizados</Link>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
