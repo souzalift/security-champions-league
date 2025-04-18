@@ -26,12 +26,22 @@ export function AdminHeader() {
             Dashboard
           </Link>
 
-          <Link
-            href="/admin/equipes-aprovadas"
-            className="hover:underline transition"
-          >
-            Equipes
-          </Link>
+          {/* Dropdown de Equipes */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="p-0 gap-1 text-sm font-normal">
+                Equipes <ChevronDown className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem asChild>
+                <Link href="/admin/equipes/aprovadas">Aprovadas</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/admin/equipes/rejeitadas">Rejeitadas</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           {/* Dropdown de Jogos */}
           <DropdownMenu>

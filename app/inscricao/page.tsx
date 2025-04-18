@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { UploadLogo } from '@/components/UploadLogo';
 import { Card } from '@/components/ui/card';
+import { toast } from 'sonner';
 
 type Jogador = {
   nome: string;
@@ -30,8 +30,8 @@ export default function InscricaoPage() {
   const [jogadores, setJogadores] = useState<Jogador[]>([
     { nome: '', posicao: '', numero: 1 },
   ]);
-  const [erro, setErro] = useState('');
-  const [sucesso, setSucesso] = useState(false);
+
+  const [loading, setLoading] = useState(false);
 
   const handleChange = <K extends keyof Jogador>(
     index: number,
@@ -56,8 +56,18 @@ export default function InscricaoPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErro('');
-    setSucesso(false);
+
+    const numeros = jogadores.map((j) => j.numero);
+    const numerosRepetidos = numeros.filter(
+      (num, i, arr) => arr.indexOf(num) !== i,
+    );
+
+    if (numerosRepetidos.length > 0) {
+      toast.error('Não é permitido dois jogadores com o mesmo número.');
+      return;
+    }
+
+    setLoading(true);
 
     const res = await fetch('/api/inscricao', {
       method: 'POST',
@@ -67,12 +77,16 @@ export default function InscricaoPage() {
       body: JSON.stringify({ ...equipe, jogadores }),
     });
 
+    setLoading(false);
+
     if (res.ok) {
-      setSucesso(true);
-      router.refresh();
+      toast.success('Inscrição enviada com sucesso!');
+      setTimeout(() => {
+        router.push('/');
+      }, 1500);
     } else {
       const json = await res.json();
-      setErro(json.error || 'Erro ao enviar inscrição.');
+      toast.error(json.error || 'Erro ao enviar inscrição.');
     }
   };
 
@@ -81,22 +95,6 @@ export default function InscricaoPage() {
       <h1 className="text-2xl font-bold mb-6 text-blue-700 text-center">
         📝 Inscrição de Equipe
       </h1>
-
-      {erro && (
-        <Alert variant="destructive" className="mb-4">
-          <AlertTitle>Erro</AlertTitle>
-          <AlertDescription>{erro}</AlertDescription>
-        </Alert>
-      )}
-
-      {sucesso && (
-        <Alert className="mb-4 border-green-500">
-          <AlertTitle>Sucesso!</AlertTitle>
-          <AlertDescription>
-            Inscrição enviada com sucesso. Aguarde a aprovação.
-          </AlertDescription>
-        </Alert>
-      )}
 
       <form onSubmit={handleSubmit} className="space-y-8">
         <Card className="p-6 space-y-4">
@@ -169,7 +167,7 @@ export default function InscricaoPage() {
               <div>
                 <Label>Posição</Label>
                 <select
-                  title="Posição"
+                  title="Selecione a posição"
                   className="input w-full"
                   value={jogador.posicao}
                   onChange={(e) =>
@@ -242,8 +240,8 @@ export default function InscricaoPage() {
           </label>
         </div>
 
-        <Button type="submit" className="w-full">
-          Enviar Inscrição
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? 'Enviando...' : 'Enviar Inscrição'}
         </Button>
       </form>
     </main>
