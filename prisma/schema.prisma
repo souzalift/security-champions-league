@@ -28,6 +28,7 @@ model Equipe {
   contato           String
   capitao           String
   aceiteRegulamento Boolean   @default(false)
+  logoUrl           String?
   jogadores         Jogador[]
   jogosCasa         Jogo[]    @relation("Casa")
   jogosFora         Jogo[]    @relation("Fora")
