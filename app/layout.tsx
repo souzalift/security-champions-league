@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { AuthProvider } from '@/components/AuthProvider';
+import { PageTransition } from '@/components/PageTransition';
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
@@ -23,7 +24,7 @@ export default function RootLayout({
         <AuthProvider>
           <Header />
           <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-8">
-            {children}
+            <PageTransition>{children}</PageTransition>
           </main>
           <Footer />
         </AuthProvider>

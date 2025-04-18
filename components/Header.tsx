@@ -11,6 +11,7 @@ import {
   SheetHeader,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { useState } from 'react';
 
 export function Header() {
   const { data: session } = useSession();
@@ -23,6 +24,12 @@ export function Header() {
     { href: '/inscricao', label: 'Inscrição' },
     { href: '/regulamento', label: 'Regulamento' },
   ];
+
+  const [open, setOpen] = useState(false);
+
+  function handleLinkClick() {
+    setOpen(false);
+  }
 
   return (
     <header className="bg-blue-700 text-white shadow-sm">
@@ -65,7 +72,7 @@ export function Header() {
 
         {/* Mobile Menu */}
         <div className="md:hidden">
-          <Sheet>
+          <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button size="icon" variant="ghost">
                 <Menu className="w-5 h-5" />
@@ -78,6 +85,7 @@ export function Header() {
                   <Link
                     key={link.href}
                     href={link.href}
+                    onClick={handleLinkClick}
                     className="text-blue-700 hover:underline"
                   >
                     {link.label}
@@ -85,11 +93,24 @@ export function Header() {
                 ))}
                 <hr />
                 {session?.user ? (
-                  <Button size="sm" variant="ghost" onClick={() => signOut()}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                      setOpen(false);
+                      signOut();
+                    }}
+                  >
                     Sair
                   </Button>
                 ) : (
-                  <Button size="sm" onClick={() => signIn()}>
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      setOpen(false);
+                      signIn();
+                    }}
+                  >
                     Login
                   </Button>
                 )}
