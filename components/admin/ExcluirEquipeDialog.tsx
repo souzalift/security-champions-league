@@ -36,8 +36,8 @@ export function ExcluirEquipeDialog({ equipeId }: Props) {
         const data = await res.json();
         toast.error(data.error || 'Erro ao excluir equipe.');
       }
-    } catch (err) {
-      toast.error('Erro inesperado ao excluir equipe.');
+    } catch {
+      toast.error('Erro ao excluir equipe');
     } finally {
       setLoading(false);
     }
