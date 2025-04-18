@@ -24,7 +24,6 @@ type Props = {
 };
 
 export function ModalJogo({
-  jogoId,
   equipeCasa,
   equipeFora,
   golsCasa,
@@ -34,9 +33,6 @@ export function ModalJogo({
   gols,
 }: Props) {
   const [open, setOpen] = useState(false);
-
-  const golsCasaEquipe = gols.filter((g) => g.jogadorId.startsWith('C-')); // você pode mudar isso para filtrar com base na equipe real
-  const golsForaEquipe = gols.filter((g) => g.jogadorId.startsWith('F-'));
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
