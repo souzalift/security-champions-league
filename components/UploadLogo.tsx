@@ -12,8 +12,8 @@ export function UploadLogo({
     <UploadButton<OurFileRouter, 'equipeLogo'>
       endpoint="equipeLogo"
       onClientUploadComplete={(res) => {
-        if (res && res[0]?.url) {
-          onUploadComplete(res[0].url);
+        if (res && res[0]?.ufsUrl) {
+          onUploadComplete(res[0].ufsUrl);
         }
       }}
       appearance={{
