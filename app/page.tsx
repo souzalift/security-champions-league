@@ -30,9 +30,15 @@ export default async function HomePage() {
         gp += golsPro;
         gc += golsContra;
 
-        if (golsPro > golsContra) (pontos += 3), (v += 1);
-        else if (golsPro === golsContra) (pontos += 1), (e += 1);
-        else d += 1;
+        if (golsPro > golsContra) {
+          pontos += 3;
+          v += 1;
+        } else if (golsPro === golsContra) {
+          pontos += 1;
+          e += 1;
+        } else {
+          d += 1;
+        }
       });
 
       return {
