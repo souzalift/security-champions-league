@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛡️ Security Champions League
 
-## Getting Started
+![Next.js](https://img.shields.io/badge/Next.js-14.2.0-blue.svg?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue.svg?logo=typescript)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.3-38bdf8.svg?logo=tailwindcss)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-2d3748.svg?logo=prisma)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue?logo=postgresql)
+![Vercel](https://img.shields.io/badge/Hosted_on-Vercel-black?logo=vercel)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-First, run the development server:
+## 📌 Visão Geral
+
+O **Security Champions League** é um sistema completo de gerenciamento de torneios de futsal, desenvolvido com **Next.js App Router**, **Prisma ORM**, **Autenticação via NextAuth** e upload de imagens via **UploadThing**. Ele oferece funcionalidades para usuários e administradores acompanharem e gerenciarem o campeonato em tempo real.
+
+---
+
+## 🔧 Tecnologias e Ferramentas
+
+- ⚛️ **Next.js 14** (App Router + SSR)
+- 💅 **Tailwind CSS** para estilização
+- 🧩 **Shadcn/UI** para componentes acessíveis e modernos
+- 🔐 **NextAuth.js** para autenticação de administradores
+- 🔄 **Prisma ORM** com PostgreSQL
+- ☁️ **UploadThing** para upload de imagens
+- 🍃 **Supabase** como banco PostgreSQL e storage opcional
+- 🔔 **Sonner** para toasts
+
+---
+
+## ✨ Funcionalidades
+
+### 👤 Público
+
+- 📋 Visualização de **classificação geral**
+- 📅 Lista de **jogos agendados** e **finalizados**
+- ⚽ Página de **artilharia**
+- 📣 Leitura do **regulamento oficial**
+- 📝 Página de **inscrição** de equipes (formulário com validação e envio de logo)
+- 📱 Design **responsivo**
+
+### 🧑‍💼 Admin
+
+- 🔐 Login com autenticação protegida
+- 📥 **Painel de inscrições pendentes**
+  - ✅ Aprovar inscrição (transforma em equipe oficial)
+  - ❌ Rejeitar inscrição
+  - ✏️ Editar equipe (nome, capitão, contato, jogadores, fotos, logo)
+- ✅ **Lista de equipes aprovadas**
+- ❌ **Lista de equipes rejeitadas** (com opção de restaurar ou excluir)
+- ⚙️ **Gerenciar partidas**
+  - Adicionar novo jogo
+  - Editar resultados e gols por jogador
+  - Excluir partidas agendadas ou finalizadas
+- 📈 Atualização automática da classificação
+
+---
+
+## 📦 Instalação
 
 ```bash
+# Clone o repositório
+git clone https://github.com/seu-usuario/security-champions-league.git
+cd security-champions-league
+
+# Instale as dependências
+npm install
+
+# Configure as variáveis de ambiente
+cp .env.example .env
+
+# Rode as migrations
+npx prisma migrate dev
+
+# Inicie o servidor
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔐 Variáveis de Ambiente (.env)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+DATABASE_URL=postgresql://...
+NEXTAUTH_SECRET=...
+NEXTAUTH_URL=http://localhost:3000
+UPLOADTHING_SECRET=...
+UPLOADTHING_APP_ID=...
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🖼️ Imagens e Uploads
 
-## Learn More
+- Upload da logo da equipe na inscrição
+- Upload da foto dos jogadores (via admin)
+- Armazenadas com UploadThing
 
-To learn more about Next.js, take a look at the following resources:
+## 📄 Licença
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Este projeto está licenciado sob os termos da MIT License.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🌐 Acesso
 
-## Deploy on Vercel
+🔗 https://security-champions-league.vercel.app
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 💡 Créditos
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Desenvolvido por Souzalift usando a stack Next.js + Prisma + Tailwind + UploadThing + Shadcn.
