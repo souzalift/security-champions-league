@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import ReverterAprovacaoButton from '@/components/ReverterAprovacaoButton';
+import { EditarEquipeDialog } from '@/components/admin/EditarEquipeDialog';
 
 export default async function EquipesAprovadasPage() {
   const inscricoes = await prisma.inscricaoEquipe.findMany({
@@ -23,9 +24,22 @@ export default async function EquipesAprovadasPage() {
               key={inscricao.id}
               className="bg-white border rounded p-4 shadow-sm space-y-2"
             >
-              <div className="text-lg font-bold text-blue-800">
-                {inscricao.nome}
+              <div className="flex justify-between items-center">
+                <div className="text-lg font-bold text-blue-800">
+                  {inscricao.nome}
+                </div>
+
+                <EditarEquipeDialog
+                  equipe={{
+                    ...inscricao,
+                    jogadores: inscricao.jogadores.map((jogador) => ({
+                      ...jogador,
+                      fotoUrl: jogador.fotoUrl || null,
+                    })),
+                  }}
+                />
               </div>
+
               <div className="text-sm text-gray-600">
                 👤 Capitão: {inscricao.capitao}
               </div>
@@ -46,8 +60,9 @@ export default async function EquipesAprovadasPage() {
                 </ul>
               </div>
 
-              {/* Botão de reverter aprovação */}
-              <ReverterAprovacaoButton inscricaoId={inscricao.id} />
+              <div className="pt-3">
+                <ReverterAprovacaoButton inscricaoId={inscricao.id} />
+              </div>
             </li>
           ))}
         </ul>
