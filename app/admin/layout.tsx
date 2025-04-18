@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { AdminHeader } from '@/components/AdminHeader';
+import { AdminHeader } from '@/components/admin/AdminHeader';
 import { AuthProvider } from '@/components/AuthProvider'; // SessionProvider wrapper
 import { Toaster } from 'sonner';
 import '@/app/globals.css';
