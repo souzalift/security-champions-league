@@ -7,6 +7,11 @@ const nextConfig = {
         hostname: 'utfs.io',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'sgkio84mub.ufs.sh',
+        pathname: '/**',
+      },
     ],
   },
 };
