@@ -111,7 +111,7 @@ export default async function HomePage() {
                       ? '🥉'
                       : index + 1}
                   </td>
-                  <td className="px-4 py-2 text-gray-800 flex items-center gap-2">
+                  <td className="px-4 py-2 text-gray-800 flex items-center gap-2 min-w-40">
                     <Image
                       src={time.logoUrl || '/avatar-time.png'}
                       alt={time.nome}
