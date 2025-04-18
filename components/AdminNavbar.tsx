@@ -10,6 +10,7 @@ const links = [
   { href: '/admin/equipes-aprovadas', label: 'Equipes Aprovadas' },
   { href: '/admin/jogos', label: 'Jogos' },
   { href: '/admin/jogos/novo', label: '+ Novo Jogo' },
+  { href: '/admin/jogos/finalizados', label: 'Jogos Finalizados' },
 ];
 
 export function AdminNavbar() {

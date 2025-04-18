@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
-import Link from 'next/link';
+import { BotaoEditarJogo } from '@/components/BotaoEditarJogo';
+import { BotaoExcluirJogo } from '@/components/BotaoExcluirJogo';
 
 export default async function AdminJogosPage() {
   const jogos = await prisma.jogo.findMany({
@@ -45,12 +46,13 @@ export default async function AdminJogosPage() {
                   {new Date(jogo.data).toLocaleString()} - {jogo.local}
                 </div>
 
-                <Link
-                  href={`/admin/jogos/${jogo.id}/editar`}
-                  className="text-blue-600 hover:underline text-sm"
-                >
-                  ✏️ Editar resultado
-                </Link>
+                <div className="flex gap-2">
+                  <BotaoEditarJogo id={jogo.id} />
+
+                  {jogo.status === 'AGENDADO' && (
+                    <BotaoExcluirJogo id={jogo.id} />
+                  )}
+                </div>
               </li>
             ),
           )}

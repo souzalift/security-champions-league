@@ -1,12 +1,25 @@
 import { prisma } from '@/lib/prisma';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale/pt-BR';
+import { Badge } from '@/components/ui/badge';
+import { ModalJogo } from '@/components/ModalJogo';
 
 export default async function JogosPage() {
   const jogos = await prisma.jogo.findMany({
     include: {
       equipeCasa: true,
       equipeFora: true,
+      gols: {
+        include: {
+          jogador: {
+            select: {
+              id: true,
+              nome: true,
+              equipeId: true,
+            },
+          },
+        },
+      },
     },
     orderBy: {
       data: 'asc',
@@ -16,92 +29,108 @@ export default async function JogosPage() {
   const agora = new Date();
 
   const proximos = jogos.filter(
-    (j: { status: string; data: Date }) =>
-      j.status === 'AGENDADO' || j.data > agora,
+    (j) => j.status === 'AGENDADO' || j.data > agora,
   );
-  const finalizados = jogos.filter(
-    (j: { status: string; data: Date; golsCasa: number | null }) =>
-      j.status === 'FINALIZADO' || (j.data <= agora && j.golsCasa !== null),
-  );
+  const finalizados = jogos.filter((j) => j.status === 'FINALIZADO');
 
   const formatarData = (data: Date) =>
     format(data, "dd 'de' MMMM 'às' HH:mm", { locale: ptBR });
 
   return (
-    <main className="flex flex-col items-center justify-center max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6 text-center">Jogos do Torneio</h1>
+    <main className="max-w-5xl mx-auto px-4 py-10">
+      <h1 className="text-2xl font-bold text-center mb-8 text-blue-700">
+        🗓️ Jogos do Torneio
+      </h1>
 
-      <section className="mb-10 w-full">
-        <h2 className="text-xl font-semibold mb-4 text-blue-600 text-center">
+      {/* Próximos Jogos */}
+      <section className="mb-12">
+        <h2 className="text-xl font-semibold mb-4 text-center text-blue-600">
           📍 Próximos Jogos
         </h2>
+
         {proximos.length === 0 ? (
-          <p className="text-gray-500 text-center">Nenhum jogo agendado.</p>
+          <p className="text-center text-gray-500">Nenhum jogo agendado.</p>
         ) : (
           <ul className="space-y-4">
-            {proximos.map(
-              (jogo: {
-                id: string;
-                equipeCasa: { nome: string };
-                equipeFora: { nome: string };
-                data: Date;
-                local: string;
-              }) => (
-                <li key={jogo.id} className="border p-4 rounded shadow-sm">
-                  <div className="text-lg font-semibold text-center">
-                    {jogo.equipeCasa.nome} vs {jogo.equipeFora.nome}
+            {proximos.map((jogo) => (
+              <li
+                key={jogo.id}
+                className="bg-white border rounded-lg p-4 shadow-sm"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <div className="text-center sm:text-left">
+                    <p className="text-lg font-semibold text-gray-800">
+                      {jogo.equipeCasa.nome} vs {jogo.equipeFora.nome}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {formatarData(jogo.data)} — {jogo.local}
+                    </p>
                   </div>
-                  <div className="text-sm text-gray-600 text-center">
-                    {formatarData(jogo.data)} — {jogo.local}
-                  </div>
-                </li>
-              ),
-            )}
+                  <Badge>{jogo.status}</Badge>
+                </div>
+              </li>
+            ))}
           </ul>
         )}
       </section>
 
-      <section className="w-full">
-        <h2 className="text-xl font-semibold mb-4 text-green-600 text-center">
+      {/* Jogos Finalizados */}
+      <section>
+        <h2 className="text-xl font-semibold mb-4 text-center text-green-700">
           ✅ Jogos Finalizados
         </h2>
+
         {finalizados.length === 0 ? (
-          <p className="text-gray-500 text-center">
+          <p className="text-center text-gray-500">
             Nenhum jogo finalizado ainda.
           </p>
         ) : (
           <ul className="space-y-4">
-            {finalizados.map(
-              (jogo: {
-                id: string;
-                equipeCasa: { nome: string };
-                equipeFora: { nome: string };
-                golsCasa: number;
-                golsFora: number;
-                data: Date;
-                local: string;
-              }) => (
-                <li
-                  key={jogo.id}
-                  className="border p-4 rounded shadow-sm bg-gray-50"
-                >
-                  <div className="text-lg font-semibold text-center">
-                    {jogo.equipeCasa.nome}{' '}
-                    <span className="font-bold text-blue-700">
-                      {jogo.golsCasa}
-                    </span>{' '}
-                    vs{' '}
-                    <span className="font-bold text-red-700">
-                      {jogo.golsFora}
-                    </span>{' '}
-                    {jogo.equipeFora.nome}
+            {finalizados.map((jogo) => (
+              <li
+                key={jogo.id}
+                className="bg-gray-50 border rounded-lg p-4 shadow-sm"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <div className="text-center sm:text-left w-full">
+                    <p className="text-lg font-semibold text-gray-800">
+                      {jogo.equipeCasa.nome}{' '}
+                      <span className="text-blue-600 font-bold">
+                        {jogo.golsCasa}
+                      </span>{' '}
+                      x{' '}
+                      <span className="text-red-600 font-bold">
+                        {jogo.golsFora}
+                      </span>{' '}
+                      {jogo.equipeFora.nome}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {formatarData(jogo.data)} — {jogo.local}
+                    </p>
+                    <div className="mt-2">
+                      <ModalJogo
+                        jogoId={jogo.id}
+                        equipeCasa={jogo.equipeCasa.nome}
+                        equipeFora={jogo.equipeFora.nome}
+                        golsCasa={jogo.golsCasa}
+                        golsFora={jogo.golsFora}
+                        local={jogo.local}
+                        dataFormatada={formatarData(jogo.data)}
+                        gols={jogo.gols.map((g) => ({
+                          id: g.id,
+                          jogadorId: g.jogador.equipeId,
+                          jogador: {
+                            nome: g.jogador.nome,
+                          },
+                          minuto: g.minuto ?? undefined,
+                        }))}
+                      />
+                    </div>
                   </div>
-                  <div className="text-sm text-gray-600 text-center">
-                    {formatarData(jogo.data)} — {jogo.local}
-                  </div>
-                </li>
-              ),
-            )}
+                  <Badge>{jogo.status}</Badge>
+                </div>
+              </li>
+            ))}
           </ul>
         )}
       </section>

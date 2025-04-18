@@ -8,19 +8,6 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-enum StatusJogo {
-  AGENDADO
-  EM_ANDAMENTO
-  FINALIZADO
-  CANCELADO
-}
-
-enum StatusInscricao {
-  PENDENTE
-  APROVADA
-  REJEITADA
-}
-
 model Equipe {
   id                String    @id @default(uuid())
   nome              String
@@ -28,11 +15,12 @@ model Equipe {
   contato           String
   capitao           String
   aceiteRegulamento Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  logoUrl           String?
   jogadores         Jogador[]
   jogosCasa         Jogo[]    @relation("Casa")
   jogosFora         Jogo[]    @relation("Fora")
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
 }
 
 model Jogador {
@@ -42,10 +30,10 @@ model Jogador {
   numero    Int
   fotoUrl   String?
   equipeId  String
-  equipe    Equipe   @relation(fields: [equipeId], references: [id])
-  gols      Gol[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  gols      Gol[]
+  equipe    Equipe   @relation(fields: [equipeId], references: [id])
 
   @@unique([equipeId, numero])
 }
@@ -59,12 +47,11 @@ model Jogo {
   data         DateTime
   local        String
   status       StatusJogo @default(AGENDADO)
-
-  equipeCasa Equipe   @relation("Casa", fields: [equipeCasaId], references: [id])
-  equipeFora Equipe   @relation("Fora", fields: [equipeForaId], references: [id])
-  gols       Gol[]
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  gols         Gol[]
+  equipeCasa   Equipe     @relation("Casa", fields: [equipeCasaId], references: [id])
+  equipeFora   Equipe     @relation("Fora", fields: [equipeForaId], references: [id])
 }
 
 model Gol {
@@ -74,9 +61,8 @@ model Gol {
   minuto    Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  jogador Jogador @relation(fields: [jogadorId], references: [id])
-  jogo    Jogo    @relation(fields: [jogoId], references: [id])
+  jogador   Jogador  @relation(fields: [jogadorId], references: [id])
+  jogo      Jogo     @relation(fields: [jogoId], references: [id])
 }
 
 model Admin {
@@ -103,9 +89,10 @@ model InscricaoEquipe {
   capitao           String
   aceiteRegulamento Boolean            @default(false)
   status            StatusInscricao    @default(PENDENTE)
-  jogadores         InscricaoJogador[]
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
+  logoUrl           String?
+  jogadores         InscricaoJogador[]
 }
 
 model InscricaoJogador {
@@ -114,7 +101,21 @@ model InscricaoJogador {
   posicao           String
   numero            Int
   inscricaoEquipeId String
-  inscricaoEquipe   InscricaoEquipe @relation(fields: [inscricaoEquipeId], references: [id])
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
+  fotoUrl           String?
+  inscricaoEquipe   InscricaoEquipe @relation(fields: [inscricaoEquipeId], references: [id])
+}
+
+enum StatusJogo {
+  AGENDADO
+  EM_ANDAMENTO
+  FINALIZADO
+  CANCELADO
+}
+
+enum StatusInscricao {
+  PENDENTE
+  APROVADA
+  REJEITADA
 }

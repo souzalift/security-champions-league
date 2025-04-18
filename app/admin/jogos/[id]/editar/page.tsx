@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import FormEditarResultado from './form';
+import { EditarJogoForm } from '@/components/admin/EditarJogoForm';
 
 export default async function EditarJogoPage({
   params,
@@ -18,10 +18,10 @@ export default async function EditarJogoPage({
 
   return (
     <main className="max-w-xl mx-auto px-4 py-8">
-      <h1 className="text-xl font-bold text-blue-700 mb-6">
+      <h1 className="text-xl font-bold text-blue-700 mb-6 text-center">
         ✏️ Editar Resultado
       </h1>
-      <FormEditarResultado jogo={jogo} />
+      <EditarJogoForm jogo={jogo} />
     </main>
   );
 }
