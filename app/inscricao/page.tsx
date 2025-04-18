@@ -2,7 +2,13 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { UploadLogo } from '@/components/UploadLogo'; // Certifique-se do path correto
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Separator } from '@/components/ui/separator';
+import { UploadLogo } from '@/components/UploadLogo';
+import { Card } from '@/components/ui/card';
 
 type Jogador = {
   nome: string;
@@ -24,38 +30,34 @@ export default function InscricaoPage() {
   const [jogadores, setJogadores] = useState<Jogador[]>([
     { nome: '', posicao: '', numero: 1 },
   ]);
-
   const [erro, setErro] = useState('');
   const [sucesso, setSucesso] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  function handleChange<K extends keyof Jogador>(
+  const handleChange = <K extends keyof Jogador>(
     index: number,
     field: K,
     value: Jogador[K],
-  ) {
+  ) => {
     const updated = [...jogadores];
     updated[index][field] = value;
     setJogadores(updated);
-  }
+  };
 
-  function addJogador() {
-    if (jogadores.length < 10) {
+  const addJogador = () => {
+    if (jogadores.length < 10)
       setJogadores([...jogadores, { nome: '', posicao: '', numero: 0 }]);
-    }
-  }
+  };
 
-  function removeJogador(index: number) {
+  const removeJogador = (index: number) => {
     if (jogadores.length > 8) {
       setJogadores(jogadores.filter((_, i) => i !== index));
     }
-  }
+  };
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErro('');
     setSucesso(false);
-    setLoading(true);
 
     const res = await fetch('/api/inscricao', {
       method: 'POST',
@@ -65,25 +67,14 @@ export default function InscricaoPage() {
       body: JSON.stringify({ ...equipe, jogadores }),
     });
 
-    setLoading(false);
-
     if (res.ok) {
       setSucesso(true);
       router.refresh();
-      setEquipe({
-        nome: '',
-        contato: '',
-        capitao: '',
-        aceite: false,
-        logoUrl: '',
-      });
-      setJogadores([{ nome: '', posicao: '', numero: 1 }]);
     } else {
       const json = await res.json();
       setErro(json.error || 'Erro ao enviar inscrição.');
-      console.error(json);
     }
-  }
+  };
 
   return (
     <main className="max-w-4xl mx-auto px-4 py-10">
@@ -91,167 +82,169 @@ export default function InscricaoPage() {
         📝 Inscrição de Equipe
       </h1>
 
-      {erro && <p className="text-red-600 mb-4 text-sm text-center">{erro}</p>}
-      {sucesso && (
-        <p className="text-green-600 mb-4 text-sm text-center">
-          ✅ Inscrição enviada com sucesso!
-        </p>
+      {erro && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertTitle>Erro</AlertTitle>
+          <AlertDescription>{erro}</AlertDescription>
+        </Alert>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <label htmlFor="nome" className="flex flex-col">
-            Nome da equipe
-            <input
-              id="nome"
-              type="text"
-              placeholder="Ex: Guardiões da Rede"
-              value={equipe.nome}
-              onChange={(e) => setEquipe({ ...equipe, nome: e.target.value })}
-              required
-              className="input"
-            />
-          </label>
+      {sucesso && (
+        <Alert className="mb-4 border-green-500">
+          <AlertTitle>Sucesso!</AlertTitle>
+          <AlertDescription>
+            Inscrição enviada com sucesso. Aguarde a aprovação.
+          </AlertDescription>
+        </Alert>
+      )}
 
-          <label htmlFor="capitao" className="flex flex-col">
-            Capitão da equipe
-            <input
-              id="capitao"
-              type="text"
-              placeholder="Ex: João Silva"
-              value={equipe.capitao}
-              onChange={(e) =>
-                setEquipe({ ...equipe, capitao: e.target.value })
-              }
-              required
-              className="input"
-            />
-          </label>
-
-          <label htmlFor="contato" className="flex flex-col md:col-span-2">
-            Contato (WhatsApp ou Email)
-            <input
-              id="contato"
-              type="text"
-              placeholder="(11) 99999-9999 ou email@dominio.com"
-              value={equipe.contato}
-              onChange={(e) =>
-                setEquipe({ ...equipe, contato: e.target.value })
-              }
-              required
-              className="input"
-            />
-          </label>
-
-          <div className="md:col-span-2">
-            <label className="text-sm font-medium mb-2 block">
-              Logo da equipe (opcional)
-            </label>
-            <UploadLogo
-              onUploadComplete={(url) =>
-                setEquipe((prev) => ({ ...prev, logoUrl: url }))
-              }
-            />
-            {equipe.logoUrl && (
-              <img
-                src={equipe.logoUrl}
-                alt="Logo preview"
-                className="w-20 h-20 mt-2 object-contain border rounded"
+      <form onSubmit={handleSubmit} className="space-y-8">
+        <Card className="p-6 space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>Nome da equipe</Label>
+              <Input
+                placeholder="Ex: Guardiões da Rede"
+                value={equipe.nome}
+                onChange={(e) => setEquipe({ ...equipe, nome: e.target.value })}
+                required
               />
-            )}
-          </div>
-        </div>
+            </div>
 
-        <div>
-          <h2 className="text-lg font-semibold mb-2 text-blue-600">
+            <div>
+              <Label>Nome do capitão</Label>
+              <Input
+                placeholder="Ex: João Silva"
+                value={equipe.capitao}
+                onChange={(e) =>
+                  setEquipe({ ...equipe, capitao: e.target.value })
+                }
+                required
+              />
+            </div>
+
+            <div>
+              <Label>Contato (WhatsApp ou e-mail)</Label>
+              <Input
+                placeholder="(11) 99999-9999"
+                value={equipe.contato}
+                onChange={(e) =>
+                  setEquipe({ ...equipe, contato: e.target.value })
+                }
+                required
+              />
+            </div>
+
+            <div>
+              <Label>Logo da equipe (opcional)</Label>
+              <UploadLogo
+                onUploadComplete={(url) =>
+                  setEquipe({ ...equipe, logoUrl: url })
+                }
+              />
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-6 space-y-4">
+          <h2 className="text-lg font-semibold text-blue-600">
             Jogadores ({jogadores.length}/10)
           </h2>
 
-          {jogadores.map((j, i) => (
+          {jogadores.map((jogador, index) => (
             <div
-              key={i}
-              className="grid grid-cols-1 md:grid-cols-3 gap-2 items-end mb-3"
+              key={index}
+              className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"
             >
-              <input
-                type="text"
-                placeholder="Nome do jogador"
-                value={j.nome}
-                onChange={(e) => handleChange(i, 'nome', e.target.value)}
-                required
-                className="input"
-              />
+              <div>
+                <Label>Nome</Label>
+                <Input
+                  placeholder="Nome completo"
+                  value={jogador.nome}
+                  onChange={(e) => handleChange(index, 'nome', e.target.value)}
+                  required
+                />
+              </div>
 
-              <select
-                title="Posição"
-                value={j.posicao}
-                onChange={(e) => handleChange(i, 'posicao', e.target.value)}
-                required
-                className="input"
-              >
-                <option value="" disabled>
-                  Posição
-                </option>
-                <option value="Goleiro">Goleiro</option>
-                <option value="Fixo">Fixo</option>
-                <option value="Ala">Ala</option>
-                <option value="Pivô">Pivô</option>
-              </select>
+              <div>
+                <Label>Posição</Label>
+                <select
+                  title="Posição"
+                  className="input w-full"
+                  value={jogador.posicao}
+                  onChange={(e) =>
+                    handleChange(index, 'posicao', e.target.value)
+                  }
+                  required
+                >
+                  <option value="" disabled>
+                    Posição
+                  </option>
+                  <option value="Goleiro">Goleiro</option>
+                  <option value="Fixo">Fixo</option>
+                  <option value="Ala">Ala</option>
+                  <option value="Pivô">Pivô</option>
+                </select>
+              </div>
 
-              <input
-                type="number"
-                placeholder="Número"
-                value={j.numero}
-                onChange={(e) =>
-                  handleChange(i, 'numero', Number(e.target.value))
-                }
-                required
-                className="input"
-              />
+              <div>
+                <Label>Número</Label>
+                <Input
+                  type="number"
+                  placeholder="Ex: 10"
+                  value={jogador.numero}
+                  onChange={(e) =>
+                    handleChange(index, 'numero', Number(e.target.value))
+                  }
+                  required
+                />
+              </div>
 
-              {i >= 8 && (
-                <button
+              {index >= 8 && (
+                <Button
                   type="button"
-                  className="text-red-500 text-sm ml-2"
-                  onClick={() => removeJogador(i)}
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => removeJogador(index)}
                 >
                   Remover
-                </button>
+                </Button>
               )}
             </div>
           ))}
 
           {jogadores.length < 10 && (
-            <button
-              type="button"
-              onClick={addJogador}
-              className="btn mt-2 text-sm"
-            >
+            <Button type="button" onClick={addJogador} variant="secondary">
               + Adicionar Jogador
-            </button>
+            </Button>
           )}
-        </div>
+        </Card>
 
-        <label className="flex items-center gap-2 text-sm">
+        <Separator />
+
+        <div className="flex items-center gap-2">
           <input
             type="checkbox"
+            id="aceite"
             checked={equipe.aceite}
             onChange={(e) => setEquipe({ ...equipe, aceite: e.target.checked })}
             required
           />
-          Li e aceito o{' '}
-          <a
-            href="/regulamento.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline text-blue-600"
-          >
-            regulamento oficial
-          </a>
-        </label>
+          <label htmlFor="aceite" className="text-sm">
+            Li e aceito o{' '}
+            <a
+              href="/regulamento.pdf"
+              target="_blank"
+              className="underline text-blue-700"
+            >
+              regulamento oficial
+            </a>
+          </label>
+        </div>
 
-        <button type="submit" disabled={loading} className="btn-primary w-full">
-          {loading ? 'Enviando...' : 'Enviar Inscrição'}
-        </button>
+        <Button type="submit" className="w-full">
+          Enviar Inscrição
+        </Button>
       </form>
     </main>
   );
