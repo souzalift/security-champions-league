@@ -7,10 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { UploadButton } from '@uploadthing/react';
 import type { OurFileRouter } from '@/server/uploadthing';
 import Image from 'next/image';
-import { UploadLogo } from '@/components/UploadLogo';
+import { UploadFoto } from '@/components/UploadButton';
 import router from 'next/router';
 
 type Jogador = {
@@ -140,7 +139,7 @@ export function EditarEquipeDialog({ equipe }: { equipe: Equipe }) {
                   className="rounded border object-cover"
                 />
               )}
-              <UploadLogo
+              <UploadFoto
                 onUploadComplete={(url) =>
                   setFormData((prev) => ({ ...prev, logoUrl: url }))
                 }
@@ -185,11 +184,10 @@ export function EditarEquipeDialog({ equipe }: { equipe: Equipe }) {
                     placeholder="Posição"
                   />
                   <div className="flex gap-2 items-center">
-                    <UploadButton<OurFileRouter, 'jogadorFoto'>
-                      endpoint="jogadorFoto"
-                      onClientUploadComplete={(res) => {
-                        if (res && res[0]?.url) {
-                          handleFotoUpload(index, res[0].url);
+                    <UploadFoto
+                      onUploadComplete={(res) => {
+                        if (res && typeof res[0] === 'string') {
+                          handleFotoUpload(index, res[0]);
                         }
                       }}
                     />
