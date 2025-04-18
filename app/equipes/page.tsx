@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import Image from 'next/image';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { User } from 'lucide-react';
 
 export default async function EquipesPage() {
   const equipes = await prisma.equipe.findMany({
@@ -30,7 +31,7 @@ export default async function EquipesPage() {
               width={80}
               height={80}
               alt={equipe.nome}
-              className="mx-auto mb-3 rounded-full border object-cover"
+              className="mx-auto mb-3 object-cover"
             />
 
             <h2 className="text-lg font-semibold text-blue-700">
@@ -48,7 +49,7 @@ export default async function EquipesPage() {
                 </Button>
               </DialogTrigger>
 
-              <DialogContent className="max-w-3xl w-full">
+              <DialogContent className="sm:max-w-xl md:max-w-2xl w-full p-6 max-h-[85vh] overflow-y-auto">
                 <h3 className="text-lg font-bold mb-4 text-center text-blue-700">
                   {equipe.nome} – Elenco
                 </h3>
@@ -57,27 +58,32 @@ export default async function EquipesPage() {
                   {equipe.jogadores.map((jogador) => (
                     <div
                       key={jogador.id}
-                      className="flex items-center gap-4 border p-3 rounded"
+                      className="flex items-center gap-3 border rounded-md px-4 py-2 bg-white shadow-sm hover:bg-gray-50 transition"
                     >
                       {jogador.fotoUrl ? (
                         <Image
                           src={jogador.fotoUrl}
-                          width={50}
-                          height={50}
-                          className="rounded-full object-cover border"
                           alt={jogador.nome}
+                          width={48}
+                          height={48}
+                          className="w-12 h-12 rounded-full object-cover border"
                         />
                       ) : (
-                        <div className="w-[50px] h-[50px] bg-gray-200 rounded-full flex items-center justify-center text-xs text-gray-500">
-                          Sem Foto
+                        <div
+                          className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-200 text-gray-500 border"
+                          aria-label="Jogador sem foto"
+                        >
+                          <User className="w-5 h-5" />
                         </div>
                       )}
 
-                      <div className="flex flex-col">
-                        <span className="font-semibold">{jogador.nome}</span>
-                        <span className="text-gray-500 text-xs">
+                      <div>
+                        <p className="font-semibold leading-none">
+                          {jogador.nome}
+                        </p>
+                        <p className="text-xs text-gray-500">
                           #{jogador.numero} – {jogador.posicao}
-                        </span>
+                        </p>
                       </div>
                     </div>
                   ))}
