@@ -9,6 +9,9 @@ import { Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { UploadButton } from '@uploadthing/react';
 import type { OurFileRouter } from '@/server/uploadthing';
+import Image from 'next/image';
+import { UploadLogo } from '@/components/UploadLogo';
+import router from 'next/router';
 
 type Jogador = {
   id: string;
@@ -23,6 +26,7 @@ type Equipe = {
   nome: string;
   capitao: string;
   contato: string;
+  logoUrl?: string | null;
   jogadores: Jogador[];
 };
 
@@ -32,6 +36,7 @@ export function EditarEquipeDialog({ equipe }: { equipe: Equipe }) {
     nome: equipe.nome,
     capitao: equipe.capitao,
     contato: equipe.contato,
+    logoUrl: equipe.logoUrl || '',
   });
 
   const [jogadores, setJogadores] = useState<Jogador[]>(equipe.jogadores);
@@ -75,6 +80,7 @@ export function EditarEquipeDialog({ equipe }: { equipe: Equipe }) {
     if (res.ok) {
       toast.success('Equipe atualizada com sucesso!');
       setOpen(false);
+      router.reload();
     } else {
       const json = await res.json();
       toast.error(json.error || 'Erro ao atualizar equipe');
@@ -122,6 +128,24 @@ export function EditarEquipeDialog({ equipe }: { equipe: Equipe }) {
                 }
               />
             </Label>
+
+            <div className="md:col-span-2 space-y-2">
+              <Label>Logo da equipe</Label>
+              {formData.logoUrl && (
+                <Image
+                  src={formData.logoUrl}
+                  alt="Logo da equipe"
+                  width={80}
+                  height={80}
+                  className="rounded border object-cover"
+                />
+              )}
+              <UploadLogo
+                onUploadComplete={(url) =>
+                  setFormData((prev) => ({ ...prev, logoUrl: url }))
+                }
+              />
+            </div>
           </div>
 
           <div>
@@ -167,10 +191,6 @@ export function EditarEquipeDialog({ equipe }: { equipe: Equipe }) {
                         if (res && res[0]?.url) {
                           handleFotoUpload(index, res[0].url);
                         }
-                      }}
-                      onUploadError={(error) => {
-                        toast.error('Erro ao enviar imagem');
-                        console.error(error);
                       }}
                     />
                     <Button

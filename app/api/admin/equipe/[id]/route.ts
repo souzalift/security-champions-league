@@ -1,50 +1,53 @@
 import { prisma } from '@/lib/prisma';
-import { z } from 'zod';
 import { NextResponse } from 'next/server';
-
-const jogadorSchema = z.object({
-  id: z.string().uuid(),
-  nome: z.string().min(1),
-  numero: z.number().int().min(1),
-  posicao: z.string().min(1),
-  fotoUrl: z.string().url().optional().nullable(),
-});
+import { z } from 'zod';
 
 const schema = z.object({
-  nome: z.string().min(1),
-  capitao: z.string().min(1),
-  contato: z.string().min(1),
-  jogadores: z.array(jogadorSchema),
+  nome: z.string(),
+  capitao: z.string(),
+  contato: z.string(),
+  logoUrl: z.string().url().optional().nullable(),
+  jogadores: z.array(
+    z.object({
+      id: z.string(),
+      nome: z.string(),
+      numero: z.number(),
+      posicao: z.string(),
+      fotoUrl: z.string().url().optional().nullable(),
+    }),
+  ),
 });
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
+  const equipeId = params.id;
   const body = await req.json();
   const parsed = schema.safeParse(body);
 
   if (!parsed.success) {
     return NextResponse.json(
-      { error: parsed.error.flatten() },
-      { status: 400 }
+      { error: parsed.error.errors[0]?.message },
+      { status: 400 },
     );
   }
 
-  const { nome, capitao, contato, jogadores } = parsed.data;
+  const { nome, capitao, contato, logoUrl, jogadores } = parsed.data;
 
   try {
-    // Atualiza equipe
+    // Atualiza os dados da equipe
     await prisma.inscricaoEquipe.update({
-      where: { id: params.id },
+      where: { id: equipeId },
       data: {
         nome,
         capitao,
         contato,
+        logoUrl: logoUrl ?? null,
       },
     });
 
-    // Atualiza jogadores
+    // Atualiza os jogadores um por um
     for (const jogador of jogadores) {
       await prisma.inscricaoJogador.update({
         where: { id: jogador.id },
@@ -59,10 +62,10 @@ export async function PATCH(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Erro ao atualizar equipe:', error);
+    console.error('[PATCH /admin/equipe/:id]', error);
     return NextResponse.json(
-      { error: 'Erro ao atualizar equipe' },
-      { status: 500 }
+      { error: 'Erro ao atualizar equipe.' },
+      { status: 500 },
     );
   }
 }
