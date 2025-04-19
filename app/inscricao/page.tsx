@@ -236,6 +236,10 @@ export default function InscricaoPage() {
                 </div>
               </div>
 
+              <div className="md:col-span-7 col-span-2">
+                <Separator />
+              </div>
+
               {index >= 8 && (
                 <Button
                   type="button"
