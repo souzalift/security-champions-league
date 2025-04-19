@@ -6,14 +6,23 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { UploadLogo } from '@/components/UploadLogo';
 import { Card } from '@/components/ui/card';
 import { toast } from 'sonner';
+import Image from 'next/image';
+import { UploadFoto } from '@/components/UploadButton';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 type Jogador = {
   nome: string;
   posicao: string;
   numero: number;
+  fotoUrl?: string;
 };
 
 export default function InscricaoPage() {
@@ -80,10 +89,12 @@ export default function InscricaoPage() {
     setLoading(false);
 
     if (res.ok) {
-      toast.success('Inscrição enviada com sucesso!');
+      toast.success('Inscrição enviada com sucesso!', {
+        duration: 2500,
+      });
       setTimeout(() => {
         router.push('/');
-      }, 1500);
+      }, 2500);
     } else {
       const json = await res.json();
       toast.error(json.error || 'Erro ao enviar inscrição.');
@@ -91,7 +102,7 @@ export default function InscricaoPage() {
   };
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-10">
+    <main className=" container max-w-4xl mx-auto px-4 py-10">
       <h1 className="text-2xl font-bold mb-6 text-blue-700 text-center">
         📝 Inscrição de Equipe
       </h1>
@@ -124,7 +135,7 @@ export default function InscricaoPage() {
             <div>
               <Label>Contato (WhatsApp ou e-mail)</Label>
               <Input
-                placeholder="(11) 99999-9999"
+                placeholder="(71) 99999-9999"
                 value={equipe.contato}
                 onChange={(e) =>
                   setEquipe({ ...equipe, contato: e.target.value })
@@ -135,11 +146,21 @@ export default function InscricaoPage() {
 
             <div>
               <Label>Logo da equipe (opcional)</Label>
-              <UploadLogo
+              <UploadFoto
                 onUploadComplete={(url) =>
                   setEquipe({ ...equipe, logoUrl: url })
                 }
               />
+
+              {equipe.logoUrl && (
+                <Image
+                  src={equipe.logoUrl}
+                  alt="Preview da logo"
+                  width={24}
+                  height={24}
+                  className="w-24 h-24 rounded border mt-2 object-cover"
+                />
+              )}
             </div>
           </div>
         </Card>
@@ -152,40 +173,38 @@ export default function InscricaoPage() {
           {jogadores.map((jogador, index) => (
             <div
               key={index}
-              className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"
+              className="grid grid-cols-3 md:grid-cols-5 gap-4 items-start"
             >
               <div>
                 <Label>Nome</Label>
                 <Input
-                  placeholder="Nome completo"
+                  placeholder="Nome do jogador"
                   value={jogador.nome}
                   onChange={(e) => handleChange(index, 'nome', e.target.value)}
                   required
                 />
               </div>
-
               <div>
                 <Label>Posição</Label>
-                <select
-                  title="Selecione a posição"
-                  className="input w-full"
+                <Select
                   value={jogador.posicao}
-                  onChange={(e) =>
-                    handleChange(index, 'posicao', e.target.value)
+                  onValueChange={(value) =>
+                    handleChange(index, 'posicao', value)
                   }
                   required
                 >
-                  <option value="" disabled>
-                    Posição
-                  </option>
-                  <option value="Goleiro">Goleiro</option>
-                  <option value="Fixo">Fixo</option>
-                  <option value="Ala">Ala</option>
-                  <option value="Pivô">Pivô</option>
-                </select>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Posição" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Goleiro">Goleiro</SelectItem>
+                    <SelectItem value="Fixo">Fixo</SelectItem>
+                    <SelectItem value="Ala">Ala</SelectItem>
+                    <SelectItem value="Pivô">Pivô</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-
-              <div>
+              <div className="max-w-[60px]">
                 <Label>Número</Label>
                 <Input
                   type="number"
@@ -196,6 +215,23 @@ export default function InscricaoPage() {
                   }
                   required
                 />
+              </div>
+              <div className="col-span-3 md:col-span-2 flex ml-5">
+                <Label>Foto do Jogador (opcional)</Label>
+                <UploadFoto
+                  onUploadComplete={(url) =>
+                    handleChange(index, 'fotoUrl', url)
+                  }
+                />
+                {jogador.fotoUrl && (
+                  <Image
+                    width={150}
+                    height={150}
+                    src={jogador.fotoUrl}
+                    alt={`Foto do jogador ${jogador.nome}`}
+                    className="w-12 h-1 mt-2 rounded-full object-cover border"
+                  />
+                )}
               </div>
 
               {index >= 8 && (
