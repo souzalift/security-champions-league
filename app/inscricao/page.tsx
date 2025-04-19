@@ -156,8 +156,8 @@ export default function InscricaoPage() {
                 <Image
                   src={equipe.logoUrl}
                   alt="Preview da logo"
-                  width={24}
-                  height={24}
+                  width={100}
+                  height={100}
                   className="w-24 h-24 rounded border mt-2 object-cover"
                 />
               )}
@@ -173,9 +173,9 @@ export default function InscricaoPage() {
           {jogadores.map((jogador, index) => (
             <div
               key={index}
-              className="grid grid-cols-3 md:grid-cols-5 gap-4 items-start"
+              className="grid grid-cols-2 md:grid-cols-7 gap-4 items-start"
             >
-              <div>
+              <div className="col-span-1 md:col-span-2">
                 <Label>Nome</Label>
                 <Input
                   placeholder="Nome do jogador"
@@ -184,7 +184,7 @@ export default function InscricaoPage() {
                   required
                 />
               </div>
-              <div>
+              <div className="col-span-1 md:col-span-2">
                 <Label>Posição</Label>
                 <Select
                   value={jogador.posicao}
@@ -204,7 +204,7 @@ export default function InscricaoPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="max-w-[60px]">
+              <div className="">
                 <Label>Número</Label>
                 <Input
                   type="number"
@@ -216,22 +216,24 @@ export default function InscricaoPage() {
                   required
                 />
               </div>
-              <div className="col-span-3 md:col-span-2 flex ml-5">
-                <Label>Foto do Jogador (opcional)</Label>
-                <UploadFoto
-                  onUploadComplete={(url) =>
-                    handleChange(index, 'fotoUrl', url)
-                  }
-                />
-                {jogador.fotoUrl && (
-                  <Image
-                    width={150}
-                    height={150}
-                    src={jogador.fotoUrl}
-                    alt={`Foto do jogador ${jogador.nome}`}
-                    className="w-12 h-1 mt-2 rounded-full object-cover border"
+              <div className="col-span-1 md:col-span-2 ml-5 flex-col first-line:gap-2">
+                <Label>Foto (opcional)</Label>
+                <div className="flex items-center gap-4">
+                  <UploadFoto
+                    onUploadComplete={(url) =>
+                      handleChange(index, 'fotoUrl', url)
+                    }
                   />
-                )}
+                  {jogador.fotoUrl && (
+                    <Image
+                      width={150}
+                      height={150}
+                      src={jogador.fotoUrl}
+                      alt={`Foto do jogador ${jogador.nome}`}
+                      className="rounded-full object-cover border w-12 h-12 -mt-2"
+                    />
+                  )}
+                </div>
               </div>
 
               {index >= 8 && (
@@ -276,7 +278,11 @@ export default function InscricaoPage() {
           </label>
         </div>
 
-        <Button type="submit" className="w-full" disabled={loading}>
+        <Button
+          type="submit"
+          className="w-full bg-blue-600 hover:bg-green-500"
+          disabled={loading}
+        >
           {loading ? 'Enviando...' : 'Enviar Inscrição'}
         </Button>
       </form>

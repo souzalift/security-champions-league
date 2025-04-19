@@ -7,12 +7,13 @@ const schema = z.object({
   contato: z.string(),
   capitao: z.string(),
   aceite: z.boolean(),
-  logoUrl: z.string().url().optional(), // <-- incluído aqui
+  logoUrl: z.string().url().optional().nullable(),
   jogadores: z.array(
     z.object({
       nome: z.string(),
       posicao: z.enum(['Goleiro', 'Fixo', 'Ala', 'Pivô']),
       numero: z.number(),
+      fotoUrl: z.string().url().optional().nullable(),
     })
   ),
 });
