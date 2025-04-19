@@ -1,4 +1,4 @@
-# 🛡️ Security Champions League
+# ⚽🍺 Security Champions League
 
 ![Next.js](https://img.shields.io/badge/Next.js-14.2.0-blue.svg?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue.svg?logo=typescript)
