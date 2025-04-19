@@ -12,19 +12,32 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 export function Header() {
   const { data: session } = useSession();
+  const pathname = usePathname();
+  const isLogin = session?.user?.email;
+  var links = [];
 
-  const links = [
-    { href: '/', label: 'Classificação' },
-    { href: '/jogos', label: 'Jogos' },
-    { href: '/equipes', label: 'Equipes' },
-    { href: '/artilharia', label: 'Artilharia' },
-    { href: '/inscricao', label: 'Inscrição' },
-    { href: '/regulamento', label: 'Regulamento' },
-  ];
-
+  if (isLogin) {
+    links = [
+      { href: '/admin/dashboard', label: 'Dashboard' },
+      { href: '/', label: 'Classificação' },
+      { href: '/admin/equipes', label: 'Equipes' },
+      { href: '/admin/jogos', label: 'Jogos' },
+      { href: '/artilharia', label: 'Artilharia' },
+      { href: '/regulamento', label: 'Regulamento' },
+    ];
+  } else {
+    links = [
+      { href: '/', label: 'Classificação' },
+      { href: '/jogos', label: 'Jogos' },
+      { href: '/equipes', label: 'Equipes' },
+      { href: '/artilharia', label: 'Artilharia' },
+      { href: '/regulamento', label: 'Regulamento' },
+    ];
+  }
   const [open, setOpen] = useState(false);
 
   function handleLinkClick() {
@@ -39,11 +52,11 @@ export function Header() {
           className="text-lg font-bold tracking-wide flex items-center gap-2"
         >
           <Image
-            src="/logo.png" // Substitua pelo caminho correto da sua logo
+            src="/logo.png"
             alt="Logo Security Champions League"
-            width={216} // Largura da imagem
-            height={143} // Altura da imagem
-            className="h-8 w-auto" // Classes adicionais para estilização
+            width={216}
+            height={143}
+            className="h-8 w-auto"
           />
           Security Champions League
         </Link>
@@ -95,7 +108,7 @@ export function Header() {
                 {session?.user ? (
                   <Button
                     size="sm"
-                    variant="ghost"
+                    className="bg-blue-600"
                     onClick={() => {
                       setOpen(false);
                       signOut();
@@ -106,6 +119,7 @@ export function Header() {
                 ) : (
                   <Button
                     size="sm"
+                    className="bg-blue-600"
                     onClick={() => {
                       setOpen(false);
                       signIn();
