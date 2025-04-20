@@ -9,18 +9,29 @@ export async function middleware(req: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   })
 
+  const isMaintenanceMode = process.env.MAINTENANCE_MODE === 'true'
+  const isMaintenancePage = pathname === '/maintenance'
   const isAdminRoute = pathname.startsWith('/admin')
-  const isLoginPage = pathname.startsWith('/admin/login')
+  const isLoginPage = pathname === '/admin/login'
 
-  // Evitar proteger a própria página de login
+  // 🔒 Proteção de admin
   if (isAdminRoute && !isLoginPage && !session) {
-    const loginUrl = new URL('/admin/login', req.url)
-    return NextResponse.redirect(loginUrl)
+    return NextResponse.redirect(new URL('/admin/login', req.url))
+  }
+
+  // 🚧 Bloqueio com manutenção ativada
+  if (
+    isMaintenanceMode &&
+    !isMaintenancePage &&
+    !isAdminRoute &&
+    !pathname.startsWith('/api')
+  ) {
+    return NextResponse.redirect(new URL('/maintenance', req.url))
   }
 
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ['/admin/:path*'], // Protege tudo em /admin exceto login
+  matcher: ['/((?!_next|favicon.ico|.*\\..*).*)'],
 }
