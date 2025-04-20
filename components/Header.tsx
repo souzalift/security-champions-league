@@ -63,6 +63,9 @@ export function Header() {
           <Link href="/artilharia" className="hover:underline">
             Artilharia
           </Link>
+          <Link href="/inscricao" className="hover:underline">
+            Inscrição
+          </Link>
           <Link href="/regulamento" className="hover:underline">
             Regulamento
           </Link>
