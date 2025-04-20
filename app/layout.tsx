@@ -23,7 +23,7 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col">
         <AuthProvider>
           <Header />
-          <main className="min-h-screen flex-1 w-full max-w-6xl mx-auto px-4 py-8">
+          <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-8">
             <PageTransition>{children}</PageTransition>
           </main>
           <Footer />
