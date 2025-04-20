@@ -6,6 +6,7 @@ import { Footer } from '@/components/Footer';
 import { AuthProvider } from '@/components/AuthProvider';
 import { PageTransition } from '@/components/PageTransition';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Toaster } from 'sonner';
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
@@ -30,6 +31,7 @@ export default function RootLayout({
               <SpeedInsights />
             </PageTransition>
           </main>
+          <Toaster position="top-center" richColors />
           <Footer />
         </AuthProvider>
       </body>
