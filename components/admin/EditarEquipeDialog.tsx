@@ -94,7 +94,7 @@ export function EditarEquipeDialog({ equipe }: { equipe: Equipe }) {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] overflow-y-auto max-w-screen-md">
         <div className="space-y-6">
           <h2 className="text-lg font-bold text-blue-700">✏️ Editar Equipe</h2>
 
@@ -190,6 +190,15 @@ export function EditarEquipeDialog({ equipe }: { equipe: Equipe }) {
                         }
                       }}
                     />
+                    {j.fotoUrl && (
+                      <Image
+                        src={j.fotoUrl}
+                        alt={`Foto do jogador ${j.nome}`}
+                        width={40}
+                        height={40}
+                        className="w-10 h-10 rounded-full object-cover border"
+                      />
+                    )}
                     <Button
                       variant="ghost"
                       size="icon"

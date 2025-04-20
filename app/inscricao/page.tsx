@@ -39,12 +39,16 @@ export default function InscricaoPage() {
     contato: '',
     capitao: '',
     aceite: false,
-    logoUrl: '',
+    logoUrl: null as string | null,
   });
 
   const [jogadores, setJogadores] = useState<Jogador[]>([
-    { nome: '', posicao: '', numero: 1 },
+    { nome: '', posicao: '', numero: 1, fotoUrl: undefined },
   ]);
+
+  const numerosDuplicados = jogadores
+    .map((j) => j.numero)
+    .filter((num, i, arr) => arr.indexOf(num) !== i);
 
   const [loading, setLoading] = useState(false);
 
@@ -76,7 +80,7 @@ export default function InscricaoPage() {
     const numerosRepetidos = numeros.filter(
       (num, i, arr) => arr.indexOf(num) !== i,
     );
-
+    console.log(numerosRepetidos.length > 0);
     if (numerosRepetidos.length > 0) {
       toast.error('Não é permitido dois jogadores com o mesmo número.');
       return;
@@ -86,22 +90,17 @@ export default function InscricaoPage() {
 
     const res = await fetch('/api/inscricao', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...equipe, jogadores }),
     });
 
-    setLoading(false);
-
     if (res.ok) {
-      toast.success('Inscrição enviada com sucesso!', {
-        duration: 2500,
-      });
+      toast.success('Inscrição enviada com sucesso!');
       setTimeout(() => {
         router.push('/');
-      }, 2500);
+      }, 2000);
     } else {
+      setLoading(false);
       const json = await res.json();
       toast.error(json.error || 'Erro ao enviar inscrição.');
     }
@@ -114,6 +113,7 @@ export default function InscricaoPage() {
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Equipe */}
         <Card className="p-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -139,7 +139,7 @@ export default function InscricaoPage() {
             </div>
 
             <div>
-              <Label>Contato (WhatsApp ou e-mail)</Label>
+              <Label>Contato</Label>
               <Input
                 placeholder="(71) 99999-9999"
                 value={equipe.contato}
@@ -160,16 +160,17 @@ export default function InscricaoPage() {
               {equipe.logoUrl && (
                 <Image
                   src={equipe.logoUrl}
-                  alt="Preview da logo"
+                  alt="Logo preview"
                   width={100}
                   height={100}
-                  className="w-24 h-24 rounded border mt-2 object-cover"
+                  className="w-24 h-24 mt-2 rounded object-cover border"
                 />
               )}
             </div>
           </div>
         </Card>
 
+        {/* Jogadores */}
         <Card className="p-6 space-y-4">
           <h2 className="text-lg font-semibold text-blue-600">
             Jogadores ({jogadores.length}/10)
@@ -198,7 +199,7 @@ export default function InscricaoPage() {
                   }
                   required
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger>
                     <SelectValue placeholder="Posição" />
                   </SelectTrigger>
                   <SelectContent>
@@ -213,15 +214,19 @@ export default function InscricaoPage() {
                 <Label>Número</Label>
                 <Input
                   type="number"
-                  placeholder="Ex: 10"
                   value={jogador.numero}
                   onChange={(e) =>
                     handleChange(index, 'numero', Number(e.target.value))
                   }
+                  className={
+                    numerosDuplicados.includes(jogador.numero)
+                      ? 'border-red-500'
+                      : ''
+                  }
                   required
                 />
               </div>
-              <div className="col-span-1 md:col-span-2 ml-5 flex-col first-line:gap-2">
+              <div className="col-span-1 md:col-span-2">
                 <Label>Foto (opcional)</Label>
                 <div className="flex items-center gap-4">
                   <UploadFoto
@@ -231,18 +236,14 @@ export default function InscricaoPage() {
                   />
                   {jogador.fotoUrl && (
                     <Image
-                      width={150}
-                      height={150}
                       src={jogador.fotoUrl}
-                      alt={`Foto do jogador ${jogador.nome}`}
-                      className="rounded-full object-cover border w-12 h-12 -mt-2"
+                      alt={`Foto de ${jogador.nome}`}
+                      width={48}
+                      height={48}
+                      className="w-12 h-12 rounded-full object-cover border"
                     />
                   )}
                 </div>
-              </div>
-
-              <div className="md:col-span-7 col-span-2">
-                <Separator />
               </div>
 
               {index >= 8 && (
@@ -257,6 +258,10 @@ export default function InscricaoPage() {
                   </Button>
                 </div>
               )}
+
+              <div className="col-span-2 md:col-span-7">
+                <Separator />
+              </div>
             </div>
           ))}
 
@@ -270,9 +275,10 @@ export default function InscricaoPage() {
         <Separator />
 
         <div className="flex items-center gap-2">
-          <input
+          <Input
             type="checkbox"
             id="aceite"
+            className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
             checked={equipe.aceite}
             onChange={(e) => setEquipe({ ...equipe, aceite: e.target.checked })}
             required
@@ -286,12 +292,12 @@ export default function InscricaoPage() {
                     href="/regulamento.pdf"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-700 underline text-sm"
+                    className="text-blue-700 underline"
                   >
                     regulamento oficial
                   </a>
                 </TooltipTrigger>
-                <TooltipContent side="top">
+                <TooltipContent>
                   <p>Visualizar regulamento em PDF</p>
                 </TooltipContent>
               </Tooltip>

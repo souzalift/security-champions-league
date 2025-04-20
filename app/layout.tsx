@@ -1,10 +1,13 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/react';
 import { Inter } from 'next/font/google';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { AuthProvider } from '@/components/AuthProvider';
 import { PageTransition } from '@/components/PageTransition';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Toaster } from 'sonner';
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
@@ -24,8 +27,13 @@ export default function RootLayout({
         <AuthProvider>
           <Header />
           <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-8">
-            <PageTransition>{children}</PageTransition>
+            <PageTransition>
+              {children}
+              <Analytics />
+              <SpeedInsights />
+            </PageTransition>
           </main>
+          <Toaster position="top-center" richColors />
           <Footer />
         </AuthProvider>
       </body>
