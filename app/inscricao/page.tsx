@@ -275,9 +275,10 @@ export default function InscricaoPage() {
         <Separator />
 
         <div className="flex items-center gap-2">
-          <input
+          <Input
             type="checkbox"
             id="aceite"
+            className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
             checked={equipe.aceite}
             onChange={(e) => setEquipe({ ...equipe, aceite: e.target.checked })}
             required
