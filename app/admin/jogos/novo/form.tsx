@@ -58,7 +58,7 @@ export default function FormNovoJogo({ equipes }: Props) {
       } else {
         toast.error(json.error || 'Erro ao criar jogo');
       }
-    } catch (err) {
+    } catch {
       toast.error('Erro de conexão com o servidor.');
     } finally {
       setLoading(false);
