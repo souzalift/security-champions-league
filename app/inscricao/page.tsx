@@ -46,6 +46,10 @@ export default function InscricaoPage() {
     { nome: '', posicao: '', numero: 1 },
   ]);
 
+  const numerosDuplicados = jogadores
+    .map((j) => j.numero)
+    .filter((num, i, arr) => arr.indexOf(num) !== i);
+
   const [loading, setLoading] = useState(false);
 
   const handleChange = <K extends keyof Jogador>(
@@ -219,6 +223,11 @@ export default function InscricaoPage() {
                     handleChange(index, 'numero', Number(e.target.value))
                   }
                   required
+                  className={
+                    numerosDuplicados.includes(jogador.numero)
+                      ? 'border-red-500'
+                      : ''
+                  }
                 />
               </div>
               <div className="col-span-1 md:col-span-2 ml-5 flex-col first-line:gap-2">
