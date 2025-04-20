@@ -139,6 +139,9 @@ export function Header() {
                 <Link href="/artilharia" onClick={handleLinkClick}>
                   Artilharia
                 </Link>
+                <Link href="/inscricao" className="hover:underline">
+                  Inscrição
+                </Link>
                 <Link href="/regulamento" onClick={handleLinkClick}>
                   Regulamento
                 </Link>
