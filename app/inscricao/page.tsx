@@ -173,9 +173,9 @@ export default function InscricaoPage() {
           {jogadores.map((jogador, index) => (
             <div
               key={index}
-              className="grid grid-cols-2 md:grid-cols-7 gap-4 items-start"
+              className="grid grid-cols-1 md:grid-cols-7 gap-4 items-center relative"
             >
-              <div className="col-span-1 md:col-span-2">
+              <div className="md:col-span-2">
                 <Label>Nome</Label>
                 <Input
                   placeholder="Nome do jogador"
@@ -184,7 +184,8 @@ export default function InscricaoPage() {
                   required
                 />
               </div>
-              <div className="col-span-1 md:col-span-2">
+
+              <div className="md:col-span-2">
                 <Label>Posição</Label>
                 <Select
                   value={jogador.posicao}
@@ -204,7 +205,8 @@ export default function InscricaoPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="">
+
+              <div>
                 <Label>Número</Label>
                 <Input
                   type="number"
@@ -216,9 +218,10 @@ export default function InscricaoPage() {
                   required
                 />
               </div>
-              <div className="col-span-1 md:col-span-2 ml-5 flex-col first-line:gap-2">
-                <Label>Foto (opcional)</Label>
-                <div className="flex items-center gap-4">
+
+              <div className="flex flex-col gap-1">
+                <Label>Foto</Label>
+                <div className="flex items-center gap-2">
                   <UploadFoto
                     onUploadComplete={(url) =>
                       handleChange(index, 'fotoUrl', url)
@@ -230,26 +233,28 @@ export default function InscricaoPage() {
                       height={150}
                       src={jogador.fotoUrl}
                       alt={`Foto do jogador ${jogador.nome}`}
-                      className="rounded-full object-cover border w-12 h-12 -mt-2"
+                      className="rounded-full object-cover border w-10 h-10"
                     />
                   )}
                 </div>
               </div>
 
-              <div className="md:col-span-7 col-span-2">
-                <Separator />
-              </div>
-
               {index >= 8 && (
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => removeJogador(index)}
-                >
-                  Remover
-                </Button>
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 pb-4">
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => removeJogador(index)}
+                  >
+                    Remover
+                  </Button>
+                </div>
               )}
+
+              <div className="md:col-span-7">
+                <Separator className="my-2" />
+              </div>
             </div>
           ))}
 
