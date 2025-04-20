@@ -1,8 +1,19 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Card } from '@/components/ui/card';
 
 type Props = {
   equipes: { id: string; nome: string }[];
@@ -10,105 +21,114 @@ type Props = {
 
 export default function FormNovoJogo({ equipes }: Props) {
   const router = useRouter();
+
   const [data, setData] = useState('');
   const [local, setLocal] = useState('');
   const [casa, setCasa] = useState('');
   const [fora, setFora] = useState('');
-  const [erro, setErro] = useState('');
+  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setErro('');
 
     if (casa === fora) {
-      setErro('As equipes devem ser diferentes.');
+      toast.error('As equipes devem ser diferentes.');
       return;
     }
 
-    const res = await fetch('/api/jogos', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        equipeCasaId: casa,
-        equipeForaId: fora,
-        data,
-        local,
-      }),
-    });
+    setLoading(true);
 
-    const json = await res.json();
+    try {
+      const res = await fetch('/api/jogos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          equipeCasaId: casa,
+          equipeForaId: fora,
+          data,
+          local,
+        }),
+      });
 
-    if (res.ok) {
-      router.push('/jogos');
-    } else {
       const json = await res.json();
-      setErro(json.error || 'Erro ao criar jogo');
+
+      if (res.ok) {
+        toast.success('✅ Jogo criado com sucesso!');
+        setTimeout(() => router.push('/jogos'), 1200);
+      } else {
+        toast.error(json.error || 'Erro ao criar jogo');
+      }
+    } catch (err) {
+      toast.error('Erro de conexão com o servidor.');
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {erro && <p className="text-red-600 text-sm">{erro}</p>}
+    <Card className="p-6 max-w-xl mx-auto space-y-6">
+      <h2 className="text-lg font-bold text-blue-700 text-center">
+        📅 Novo Jogo
+      </h2>
 
-      <label className="block">
-        <span className="text-sm font-medium">Equipe Casa</span>
-        <select
-          className="input"
-          value={casa}
-          onChange={(e) => setCasa(e.target.value)}
-          required
-        >
-          <option value="">Selecione</option>
-          {equipes.map((eq) => (
-            <option key={eq.id} value={eq.id}>
-              {eq.nome}
-            </option>
-          ))}
-        </select>
-      </label>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <Label>Equipe Casa</Label>
+          <Select value={casa} onValueChange={setCasa}>
+            <SelectTrigger>
+              <SelectValue placeholder="Selecione a equipe da casa" />
+            </SelectTrigger>
+            <SelectContent>
+              {equipes.map((eq) => (
+                <SelectItem key={eq.id} value={eq.id}>
+                  {eq.nome}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-      <label className="block">
-        <span className="text-sm font-medium">Equipe Fora</span>
-        <select
-          className="input"
-          value={fora}
-          onChange={(e) => setFora(e.target.value)}
-          required
-        >
-          <option value="">Selecione</option>
-          {equipes.map((eq) => (
-            <option key={eq.id} value={eq.id}>
-              {eq.nome}
-            </option>
-          ))}
-        </select>
-      </label>
+        <div>
+          <Label>Equipe Fora</Label>
+          <Select value={fora} onValueChange={setFora}>
+            <SelectTrigger>
+              <SelectValue placeholder="Selecione a equipe visitante" />
+            </SelectTrigger>
+            <SelectContent>
+              {equipes.map((eq) => (
+                <SelectItem key={eq.id} value={eq.id}>
+                  {eq.nome}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-      <label className="block">
-        <span className="text-sm font-medium">Data e Hora</span>
-        <input
-          type="datetime-local"
-          className="input"
-          value={data}
-          onChange={(e) => setData(e.target.value)}
-          required
-        />
-      </label>
+        <div>
+          <Label>Data e Hora</Label>
+          <Input
+            type="datetime-local"
+            value={data}
+            onChange={(e) => setData(e.target.value)}
+            required
+          />
+        </div>
 
-      <label className="block">
-        <span className="text-sm font-medium">Local</span>
-        <input
-          type="text"
-          className="input"
-          value={local}
-          onChange={(e) => setLocal(e.target.value)}
-          required
-        />
-      </label>
+        <div>
+          <Label>Local</Label>
+          <Input
+            type="text"
+            placeholder="Ex: Quadra Coberta A"
+            value={local}
+            onChange={(e) => setLocal(e.target.value)}
+            required
+          />
+        </div>
 
-      <button type="submit" className="btn-primary w-full">
-        Criar Jogo
-      </button>
-    </form>
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? 'Criando...' : 'Criar Jogo'}
+        </Button>
+      </form>
+    </Card>
   );
 }
