@@ -17,6 +17,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TooltipProvider,
+} from '@/components/ui/tooltip';
 
 type Jogador = {
   nome: string;
@@ -102,7 +108,7 @@ export default function InscricaoPage() {
   };
 
   return (
-    <main className=" container max-w-4xl mx-auto px-4 py-10">
+    <main className="container max-w-4xl mx-auto px-4 py-10">
       <h1 className="text-2xl font-bold mb-6 text-blue-700 text-center">
         📝 Inscrição de Equipe
       </h1>
@@ -151,7 +157,6 @@ export default function InscricaoPage() {
                   setEquipe({ ...equipe, logoUrl: url })
                 }
               />
-
               {equipe.logoUrl && (
                 <Image
                   src={equipe.logoUrl}
@@ -173,9 +178,9 @@ export default function InscricaoPage() {
           {jogadores.map((jogador, index) => (
             <div
               key={index}
-              className="grid grid-cols-1 md:grid-cols-7 gap-4 items-center relative"
+              className="grid grid-cols-2 md:grid-cols-7 gap-4 items-start"
             >
-              <div className="md:col-span-2">
+              <div className="col-span-1 md:col-span-2">
                 <Label>Nome</Label>
                 <Input
                   placeholder="Nome do jogador"
@@ -184,8 +189,7 @@ export default function InscricaoPage() {
                   required
                 />
               </div>
-
-              <div className="md:col-span-2">
+              <div className="col-span-1 md:col-span-2">
                 <Label>Posição</Label>
                 <Select
                   value={jogador.posicao}
@@ -205,7 +209,6 @@ export default function InscricaoPage() {
                   </SelectContent>
                 </Select>
               </div>
-
               <div>
                 <Label>Número</Label>
                 <Input
@@ -218,10 +221,9 @@ export default function InscricaoPage() {
                   required
                 />
               </div>
-
-              <div className="flex flex-col gap-1">
-                <Label>Foto</Label>
-                <div className="flex items-center gap-2">
+              <div className="col-span-1 md:col-span-2 ml-5 flex-col first-line:gap-2">
+                <Label>Foto (opcional)</Label>
+                <div className="flex items-center gap-4">
                   <UploadFoto
                     onUploadComplete={(url) =>
                       handleChange(index, 'fotoUrl', url)
@@ -233,14 +235,18 @@ export default function InscricaoPage() {
                       height={150}
                       src={jogador.fotoUrl}
                       alt={`Foto do jogador ${jogador.nome}`}
-                      className="rounded-full object-cover border w-10 h-10"
+                      className="rounded-full object-cover border w-12 h-12 -mt-2"
                     />
                   )}
                 </div>
               </div>
 
+              <div className="md:col-span-7 col-span-2">
+                <Separator />
+              </div>
+
               {index >= 8 && (
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 pb-4">
+                <div className="col-span-2 md:col-span-7 flex justify-center">
                   <Button
                     type="button"
                     variant="destructive"
@@ -251,10 +257,6 @@ export default function InscricaoPage() {
                   </Button>
                 </div>
               )}
-
-              <div className="md:col-span-7">
-                <Separator className="my-2" />
-              </div>
             </div>
           ))}
 
@@ -277,13 +279,23 @@ export default function InscricaoPage() {
           />
           <label htmlFor="aceite" className="text-sm">
             Li e aceito o{' '}
-            <a
-              href="/regulamento.pdf"
-              target="_blank"
-              className="underline text-blue-700"
-            >
-              regulamento oficial
-            </a>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <a
+                    href="/regulamento.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-700 underline text-sm"
+                  >
+                    regulamento oficial
+                  </a>
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  <p>Visualizar regulamento em PDF</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </label>
         </div>
 
