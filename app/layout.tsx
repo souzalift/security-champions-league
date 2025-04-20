@@ -5,6 +5,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { AuthProvider } from '@/components/AuthProvider';
 import { PageTransition } from '@/components/PageTransition';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
@@ -24,7 +25,10 @@ export default function RootLayout({
         <AuthProvider>
           <Header />
           <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-8">
-            <PageTransition>{children}</PageTransition>
+            <PageTransition>
+              {children}
+              <SpeedInsights />
+            </PageTransition>
           </main>
           <Footer />
         </AuthProvider>
