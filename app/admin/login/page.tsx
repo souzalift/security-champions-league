@@ -5,11 +5,7 @@ import { Card } from '@/components/ui/card';
 
 export default function LoginPage() {
   return (
-<<<<<<< HEAD
     <main className="flex items-center justify-center px-4 mt-52">
-=======
-    <main className="flex items-center justify-center px-4 mt-52">
->>>>>>> dev
       <Card className="w-full max-w-md p-8">
         <h1 className="text-2xl font-bold mb-4 text-center text-blue-700">
           Painel Administrativo
