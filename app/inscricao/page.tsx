@@ -17,6 +17,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TooltipProvider,
+} from '@/components/ui/tooltip';
 
 type Jogador = {
   nome: string;
@@ -102,7 +108,7 @@ export default function InscricaoPage() {
   };
 
   return (
-    <main className=" container max-w-4xl mx-auto px-4 py-10">
+    <main className="container max-w-4xl mx-auto px-4 py-10">
       <h1 className="text-2xl font-bold mb-6 text-blue-700 text-center">
         📝 Inscrição de Equipe
       </h1>
@@ -151,7 +157,6 @@ export default function InscricaoPage() {
                   setEquipe({ ...equipe, logoUrl: url })
                 }
               />
-
               {equipe.logoUrl && (
                 <Image
                   src={equipe.logoUrl}
@@ -204,7 +209,7 @@ export default function InscricaoPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="">
+              <div>
                 <Label>Número</Label>
                 <Input
                   type="number"
@@ -236,15 +241,21 @@ export default function InscricaoPage() {
                 </div>
               </div>
 
+              <div className="md:col-span-7 col-span-2">
+                <Separator />
+              </div>
+
               {index >= 8 && (
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => removeJogador(index)}
-                >
-                  Remover
-                </Button>
+                <div className="col-span-2 md:col-span-7 flex justify-center">
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => removeJogador(index)}
+                  >
+                    Remover
+                  </Button>
+                </div>
               )}
             </div>
           ))}
@@ -268,13 +279,23 @@ export default function InscricaoPage() {
           />
           <label htmlFor="aceite" className="text-sm">
             Li e aceito o{' '}
-            <a
-              href="/regulamento.pdf"
-              target="_blank"
-              className="underline text-blue-700"
-            >
-              regulamento oficial
-            </a>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <a
+                    href="/regulamento.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-700 underline text-sm"
+                  >
+                    regulamento oficial
+                  </a>
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  <p>Visualizar regulamento em PDF</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </label>
         </div>
 
