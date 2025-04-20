@@ -88,7 +88,7 @@ UPLOADTHING_APP_ID=...
 ## 🖼️ Imagens e Uploads
 
 - Upload da logo da equipe na inscrição
-- Upload da foto dos jogadores (via admin)
+- Upload da foto dos jogadores na inscrição
 - Armazenadas com UploadThing
 
 ## 📄 Licença
