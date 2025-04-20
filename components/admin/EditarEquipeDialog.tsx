@@ -94,7 +94,7 @@ export function EditarEquipeDialog({ equipe }: { equipe: Equipe }) {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] overflow-y-auto max-w-screen-md">
         <div className="space-y-6">
           <h2 className="text-lg font-bold text-blue-700">✏️ Editar Equipe</h2>
 
