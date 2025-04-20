@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image'; // Importando o componente Image
+import Image from 'next/image';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
@@ -11,33 +11,21 @@ import {
   SheetHeader,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
+
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 
 export function Header() {
   const { data: session } = useSession();
   const pathname = usePathname();
-  const isLogin = session?.user?.email;
-  var links = [];
+  const isLogin = !!session?.user?.email;
 
-  if (isLogin) {
-    links = [
-      { href: '/admin/dashboard', label: 'Dashboard' },
-      { href: '/', label: 'Classificação' },
-      { href: '/admin/equipes', label: 'Equipes' },
-      { href: '/admin/jogos', label: 'Jogos' },
-      { href: '/artilharia', label: 'Artilharia' },
-      { href: '/regulamento', label: 'Regulamento' },
-    ];
-  } else {
-    links = [
-      { href: '/', label: 'Classificação' },
-      { href: '/jogos', label: 'Jogos' },
-      { href: '/equipes', label: 'Equipes' },
-      { href: '/artilharia', label: 'Artilharia' },
-      { href: '/regulamento', label: 'Regulamento' },
-    ];
-  }
   const [open, setOpen] = useState(false);
 
   function handleLinkClick() {
@@ -62,17 +50,59 @@ export function Header() {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex gap-6 text-sm font-medium">
-          {links.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:underline">
-              {link.label}
-            </Link>
-          ))}
+        <nav className="hidden md:flex gap-6 text-sm font-medium items-center">
+          <Link href="/" className="hover:underline">
+            Classificação
+          </Link>
+          <Link href="/jogos" className="hover:underline">
+            Jogos
+          </Link>
+          <Link href="/equipes" className="hover:underline">
+            Equipes
+          </Link>
+          <Link href="/artilharia" className="hover:underline">
+            Artilharia
+          </Link>
+          <Link href="/regulamento" className="hover:underline">
+            Regulamento
+          </Link>
+
+          {isLogin && (
+            <DropdownMenu>
+              <DropdownMenuTrigger className="hover:underline cursor-pointer">
+                Administração
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem asChild>
+                  <Link href="/admin/dashboard">Dashboard</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/admin/equipes/aprovadas">Equipes Aprovadas</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/admin/equipes/rejeitadas">
+                    Equipes Rejeitadas
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/admin/jogos/novo">Adicionar Partida</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/admin/jogos">Atualizar Partida</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/admin/jogos/finalizados">
+                    Partidas Finalizadas
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </nav>
 
         {/* Auth */}
         <div className="hidden md:block">
-          {session?.user ? (
+          {isLogin ? (
             <Button size="sm" variant="ghost" onClick={() => signOut()}>
               Sair
             </Button>
@@ -94,18 +124,60 @@ export function Header() {
             <SheetContent>
               <SheetHeader className="mb-4 text-lg font-bold">Menu</SheetHeader>
               <div className="flex flex-col gap-4 text-sm">
-                {links.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={handleLinkClick}
-                    className="text-blue-700 hover:underline"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+                <Link href="/" onClick={handleLinkClick}>
+                  Classificação
+                </Link>
+                <Link href="/jogos" onClick={handleLinkClick}>
+                  Jogos
+                </Link>
+                <Link href="/equipes" onClick={handleLinkClick}>
+                  Equipes
+                </Link>
+                <Link href="/artilharia" onClick={handleLinkClick}>
+                  Artilharia
+                </Link>
+                <Link href="/regulamento" onClick={handleLinkClick}>
+                  Regulamento
+                </Link>
+
+                {isLogin && (
+                  <>
+                    <hr />
+                    <p className="text-xs font-semibold text-gray-500 uppercase">
+                      Administração
+                    </p>
+                    <Link href="/admin/dashboard" onClick={handleLinkClick}>
+                      Dashboard
+                    </Link>
+                    <Link
+                      href="/admin/equipes/aprovadas"
+                      onClick={handleLinkClick}
+                    >
+                      Equipes Aprovadas
+                    </Link>
+                    <Link
+                      href="/admin/equipes/rejeitadas"
+                      onClick={handleLinkClick}
+                    >
+                      Equipes Rejeitadas
+                    </Link>
+                    <Link href="/admin/jogos/novo" onClick={handleLinkClick}>
+                      Adicionar Partida
+                    </Link>
+                    <Link href="/admin/jogos" onClick={handleLinkClick}>
+                      Atualizar Partida
+                    </Link>
+                    <Link
+                      href="/admin/jogos/finalizados"
+                      onClick={handleLinkClick}
+                    >
+                      Partidas Finalizadas
+                    </Link>
+                  </>
+                )}
+
                 <hr />
-                {session?.user ? (
+                {isLogin ? (
                   <Button
                     size="sm"
                     className="bg-blue-600"
