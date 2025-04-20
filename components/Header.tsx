@@ -51,50 +51,142 @@ export function Header() {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex gap-6 text-sm font-medium items-center">
-          <Link href="/" className="hover:underline">
+          <Link
+            href="/"
+            className={
+              pathname === '/'
+                ? 'text-yellow-400 font-bold'
+                : 'hover:text-yellow-400'
+            }
+          >
             Classificação
           </Link>
-          <Link href="/jogos" className="hover:underline">
+          <Link
+            href="/jogos"
+            className={
+              pathname === '/jogos'
+                ? 'text-yellow-400 font-bold'
+                : 'hover:text-yellow-400'
+            }
+          >
             Jogos
           </Link>
-          <Link href="/equipes" className="hover:underline">
+          <Link
+            href="/equipes"
+            className={
+              pathname === '/equipes'
+                ? 'text-yellow-400 font-bold'
+                : 'hover:text-yellow-400'
+            }
+          >
             Equipes
           </Link>
-          <Link href="/artilharia" className="hover:underline">
+          <Link
+            href="/artilharia"
+            className={
+              pathname === '/artilharia'
+                ? 'text-yellow-400 font-bold'
+                : 'hover:text-yellow-400'
+            }
+          >
             Artilharia
           </Link>
-          <Link href="/inscricao" className="hover:underline">
+          <Link
+            href="/inscricao"
+            className={
+              pathname === '/inscricao'
+                ? 'text-yellow-400 font-bold'
+                : 'hover:text-yellow-400'
+            }
+          >
             Inscrição
           </Link>
-          <Link href="/regulamento" className="hover:underline">
+          <Link
+            href="/regulamento"
+            className={
+              pathname === '/regulamento'
+                ? 'text-yellow-400 font-bold'
+                : 'hover:text-yellow-400'
+            }
+          >
             Regulamento
           </Link>
 
           {isLogin && (
             <DropdownMenu>
-              <DropdownMenuTrigger className="hover:underline cursor-pointer">
+              <DropdownMenuTrigger className="hover:text-yellow-400 cursor-pointer">
                 Administração
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem asChild>
-                  <Link href="/admin/dashboard">Dashboard</Link>
+                  <Link
+                    href="/admin/dashboard"
+                    className={
+                      pathname === '/admin/dashboard'
+                        ? 'text-yellow-400 font-bold'
+                        : 'hover:text-yellow-400'
+                    }
+                  >
+                    Dashboard
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/admin/equipes/aprovadas">Equipes Aprovadas</Link>
+                  <Link
+                    href="/admin/equipes/aprovadas"
+                    className={
+                      pathname === '/admin/equipes/aprovadas'
+                        ? 'text-yellow-400 font-bold'
+                        : 'hover:text-yellow-400'
+                    }
+                  >
+                    Equipes Aprovadas
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/admin/equipes/rejeitadas">
+                  <Link
+                    href="/admin/equipes/rejeitadas"
+                    className={
+                      pathname === '/admin/equipes/rejeitadas'
+                        ? 'text-yellow-400 font-bold'
+                        : 'hover:text-yellow-400'
+                    }
+                  >
                     Equipes Rejeitadas
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/admin/jogos/novo">Adicionar Partida</Link>
+                  <Link
+                    href="/admin/jogos/novo"
+                    className={
+                      pathname === '/admin/jogos/novo'
+                        ? 'text-yellow-400 font-bold'
+                        : 'hover:text-yellow-400'
+                    }
+                  >
+                    Adicionar Partida
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/admin/jogos">Atualizar Partida</Link>
+                  <Link
+                    href="/admin/jogos"
+                    className={
+                      pathname === '/admin/jogos'
+                        ? 'text-yellow-400 font-bold'
+                        : 'hover:text-yellow-400'
+                    }
+                  >
+                    Atualizar Partida
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/admin/jogos/finalizados">
+                  <Link
+                    href="/admin/jogos/finalizados"
+                    className={
+                      pathname === '/admin/jogos/finalizados'
+                        ? 'text-yellow-400 font-bold'
+                        : 'hover:text-yellow-400'
+                    }
+                  >
                     Partidas Finalizadas
                   </Link>
                 </DropdownMenuItem>
