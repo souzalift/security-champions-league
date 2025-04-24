@@ -93,19 +93,10 @@ export default async function HomePage() {
                   ? 'text-green-600 font-bold' // Classificados (1º ao 4º lugar)
                   : 'text-red-500 font-bold'; // Não classificados (5º lugar em diante)
 
-              const highlightClass =
-                index === 0
-                  ? 'bg-yellow-50 font-semibold'
-                  : index === 1
-                  ? 'bg-gray-100'
-                  : index === 2
-                  ? 'bg-amber-50'
-                  : '';
-
               return (
                 <tr
                   key={time.id}
-                  className={`${highlightClass} border-t hover:bg-gray-50 transition`}
+                  className="border-t hover:bg-gray-50 transition"
                 >
                   <td
                     className={`px-4 py-2 text-center text-gray-700 font-medium ${positionClass}`}
