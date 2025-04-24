@@ -88,6 +88,11 @@ export default async function HomePage() {
           </thead>
           <tbody>
             {tabela.map((time, index) => {
+              const positionClass =
+                index < 4
+                  ? 'text-green-600 font-bold' // Classificados (1º ao 4º lugar)
+                  : 'text-red-500 font-bold'; // Não classificados (5º lugar em diante)
+
               const highlightClass =
                 index === 0
                   ? 'bg-yellow-50 font-semibold'
@@ -102,14 +107,10 @@ export default async function HomePage() {
                   key={time.id}
                   className={`${highlightClass} border-t hover:bg-gray-50 transition`}
                 >
-                  <td className="px-4 py-2 text-center text-gray-700 font-medium">
-                    {index === 0
-                      ? '🥇'
-                      : index === 1
-                      ? '🥈'
-                      : index === 2
-                      ? '🥉'
-                      : index + 1}
+                  <td
+                    className={`px-4 py-2 text-center text-gray-700 font-medium ${positionClass}`}
+                  >
+                    {index + 1}
                   </td>
                   <td className="px-4 py-2 text-gray-800 flex items-center gap-2 min-w-40">
                     <Image
