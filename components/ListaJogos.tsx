@@ -105,7 +105,7 @@ export function ListaJogos({ jogos }: Props) {
         </h2>
 
         {Object.entries(jogosAgrupados)
-          .filter(([_, lista]) => lista.some((j) => j.status !== 'FINALIZADO'))
+          .filter(([, lista]) => lista.some((j) => j.status !== 'FINALIZADO')) // Substituí '_' por ', lista'
           .map(([dataStr, lista]) => (
             <div key={dataStr} className="mb-6">
               <h3 className="text-sm font-medium text-gray-500 mb-2">
@@ -155,7 +155,7 @@ export function ListaJogos({ jogos }: Props) {
         </h2>
 
         {Object.entries(jogosAgrupados)
-          .filter(([_, lista]) => lista.some((j) => j.status === 'FINALIZADO'))
+          .filter(([, lista]) => lista.some((j) => j.status === 'FINALIZADO')) // Substituí '_' por ', lista'
           .map(([dataStr, lista]) => (
             <div key={dataStr} className="mb-6">
               <h3 className="text-sm font-medium text-gray-500 mb-2">
