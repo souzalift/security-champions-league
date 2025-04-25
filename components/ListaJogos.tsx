@@ -102,13 +102,14 @@ export function ListaJogos({ jogos }: Props) {
       <section className="mb-12">
         <h2 className="text-xl font-semibold mb-4 text-blue-600 text-center">
           📍 Próximos Jogos
+          <Separator className="my-4" />
         </h2>
 
         {Object.entries(jogosAgrupados)
           .filter(([, lista]) => lista.some((j) => j.status !== 'FINALIZADO')) // Substituí '_' por ', lista'
           .map(([dataStr, lista]) => (
             <div key={dataStr} className="mb-6">
-              <h3 className="text-sm font-medium text-gray-500 mb-2">
+              <h3 className="text-center text-base font-semibold text-white bg-blue-500 px-4 py-1.5 rounded-full w-fit mx-auto shadow-sm mb-6 ">
                 {dataStr}
               </h3>
 
