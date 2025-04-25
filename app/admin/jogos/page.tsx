@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { prisma } from '@/lib/prisma';
 import { BotaoEditarJogo } from '@/components/BotaoEditarJogo';
 import { BotaoExcluirJogo } from '@/components/BotaoExcluirJogo';

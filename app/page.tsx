@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'; // Revalida a página a cada requisição
 import { prisma } from '@/lib/prisma';
 import Image from 'next/image';
 
