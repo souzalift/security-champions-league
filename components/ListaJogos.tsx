@@ -133,7 +133,7 @@ export function ListaJogos({ jogos }: Props) {
                         <Badge
                           className={
                             jogo.status === 'FINALIZADO'
-                              ? 'bg-green-100 text-green-700'
+                              ? 'bg-green-100 text-green-700 hover:bg-green-200'
                               : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
                           }
                         >
@@ -159,7 +159,7 @@ export function ListaJogos({ jogos }: Props) {
           .filter(([, lista]) => lista.some((j) => j.status === 'FINALIZADO')) // Substituí '_' por ', lista'
           .map(([dataStr, lista]) => (
             <div key={dataStr} className="mb-6">
-              <h3 className="text-sm font-medium text-gray-500 mb-2">
+              <h3 className="text-center text-base font-semibold bg-green-100 text-green-700 hover:bg-green-200 px-4 py-1.5 rounded-full w-fit mx-auto shadow-sm mb-6 ">
                 {dataStr}
               </h3>
 
