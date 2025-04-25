@@ -109,7 +109,7 @@ export function ListaJogos({ jogos }: Props) {
           .filter(([, lista]) => lista.some((j) => j.status !== 'FINALIZADO')) // Substituí '_' por ', lista'
           .map(([dataStr, lista]) => (
             <div key={dataStr} className="mb-6">
-              <h3 className="text-center text-base font-semibold text-white bg-blue-500 px-4 py-1.5 rounded-full w-fit mx-auto shadow-sm mb-6 ">
+              <h3 className="text-center text-base font-semibold bg-blue-100 text-blue-700 hover:bg-blue-200 px-4 py-1.5 rounded-full w-fit mx-auto shadow-sm mb-6 ">
                 {dataStr}
               </h3>
 
@@ -134,7 +134,7 @@ export function ListaJogos({ jogos }: Props) {
                           className={
                             jogo.status === 'FINALIZADO'
                               ? 'bg-green-100 text-green-700'
-                              : 'bg-blue-100 text-blue-700'
+                              : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
                           }
                         >
                           {jogo.status}
