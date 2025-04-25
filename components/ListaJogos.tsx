@@ -133,8 +133,8 @@ export function ListaJogos({ jogos }: Props) {
                         <Badge
                           className={
                             jogo.status === 'FINALIZADO'
-                              ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                              : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                              ? 'bg-green-100 text-center text-green-700 hover:bg-green-200'
+                              : 'bg-blue-100 text-center text-blue-700 hover:bg-blue-200'
                           }
                         >
                           {jogo.status}
