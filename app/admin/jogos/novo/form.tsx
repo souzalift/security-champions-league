@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card } from '@/components/ui/card';
+import { formatInTimeZone } from 'date-fns-tz';
 
 type Props = {
   equipes: { id: string; nome: string }[];
@@ -39,13 +40,20 @@ export default function FormNovoJogo({ equipes }: Props) {
     setLoading(true);
 
     try {
+      // Ajusta o valor de "data" para UTC
+      const dataUtc = formatInTimeZone(
+        data,
+        'America/Sao_Paulo',
+        "yyyy-MM-dd'T'HH:mm:ssXXX",
+      );
+
       const res = await fetch('/api/jogos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           equipeCasaId: casa,
           equipeForaId: fora,
-          data,
+          data: dataUtc, // Envia a data ajustada para UTC
           local,
         }),
       });
