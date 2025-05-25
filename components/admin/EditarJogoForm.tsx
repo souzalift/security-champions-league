@@ -42,7 +42,6 @@ export function EditarJogoForm({ jogo }: Props) {
   const [golsFora, setGolsFora] = useState(jogo.golsFora);
   const [gols, setGols] = useState<Gol[]>([]);
   const [jogadores, setJogadores] = useState<Jogador[]>([]);
-  const [erro, setErro] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -83,28 +82,7 @@ export function EditarJogoForm({ jogo }: Props) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setErro('');
     setLoading(true);
-
-    // valida se os gols individuais batem com o placar total
-    const golsCasaEquipe = gols.filter((g) => {
-      const jogador = jogadores.find((j) => j.id === g.jogadorId);
-      return jogador?.equipeId === jogo.equipeCasa.id;
-    });
-
-    const golsForaEquipe = gols.filter((g) => {
-      const jogador = jogadores.find((j) => j.id === g.jogadorId);
-      return jogador?.equipeId === jogo.equipeFora.id;
-    });
-
-    if (
-      golsCasaEquipe.length !== golsCasa ||
-      golsForaEquipe.length !== golsFora
-    ) {
-      toast.error('Número de gols individuais não confere com o placar total.');
-      setLoading(false);
-      return;
-    }
 
     const res = await fetch(`/api/jogos/${jogo.id}`, {
       method: 'PUT',
@@ -132,8 +110,6 @@ export function EditarJogoForm({ jogo }: Props) {
       className="space-y-8 bg-white p-6 rounded shadow max-w-3xl"
     >
       <h2 className="text-xl font-bold text-blue-700">Placar da Partida</h2>
-
-      {erro && <p className="text-red-500 text-sm">{erro}</p>}
 
       <div className="grid grid-cols-2 gap-6">
         <div>
