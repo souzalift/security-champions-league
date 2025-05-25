@@ -6,7 +6,7 @@ export function Footer() {
       &copy; {new Date().getFullYear()} Security Champions League. Todos os
       direitos reservados. Desenvolvido por{' '}
       <span className="text-blue-600 font-semibold">
-        <Link href="/">Souzalift</Link>
+        <Link href="https://www.linkedin.com/in/souzalift/">Souzalift</Link>
       </span>
     </footer>
   );
