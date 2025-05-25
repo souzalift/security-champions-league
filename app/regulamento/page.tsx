@@ -16,7 +16,7 @@ export default function RegulamentoPage() {
       <section className="mb-6">
         <h2 className="text-lg font-semibold mb-2">⚙️ Formato da Competição</h2>
         <ul className="list-disc list-inside text-gray-700 space-y-1">
-          <li>👥 8 equipes participantes</li>
+          <li>👥 6 equipes participantes</li>
           <li>🔁 Todas se enfrentam em turno único</li>
           <li>✅ As 4 melhores classificadas avançam para as semifinais</li>
           <li>⚔️ Semifinais e Final em jogo único e eliminatório</li>
@@ -38,7 +38,10 @@ export default function RegulamentoPage() {
         <ul className="list-disc list-inside text-gray-700 space-y-1">
           <li>⌛ 2 tempos de 15 minutos corridos</li>
           <li>🔁 Intervalo: 5 minutos</li>
-          <li>🏆 Final com prorrogação em caso de empate</li>
+          <li>
+            🏆 Final com prorrogação em caso de empate (2 tempos de 7 minutos
+            corridos)
+          </li>
         </ul>
       </section>
 
@@ -71,6 +74,7 @@ export default function RegulamentoPage() {
           <li>
             🚫 Condutas antidesportivas podem gerar expulsão da competição
           </li>
+          <li>🟨🟥 Cartões zerados na fase eliminatória</li>
         </ul>
       </section>
 
@@ -88,9 +92,9 @@ export default function RegulamentoPage() {
         <ul className="list-disc list-inside text-gray-700 space-y-1">
           <li>🥇 Campeão: Troféu e medalhas</li>
           <li>🥈 Vice-campeão: Medalhas</li>
-          <li>🎯 Artilheiro: Troféu individual</li>
-          <li>🧤 Melhor goleiro: Troféu individual</li>
-          <li>👑 Craque do campeonato: Troféu individual</li>
+          <li>🎯 Artilheiro: Card Personalizado Instagram</li>
+          <li>🧤 Melhor goleiro: Card Personalizado Instagram</li>
+          <li>👑 Craque do campeonato: Card Personalizado Instagram</li>
         </ul>
       </section>
 
@@ -109,7 +113,7 @@ export default function RegulamentoPage() {
           <br />
           🗓️ Prazo: até 31/04/2025
           <br />
-          📲 Pagamento via Pix – utilize o QR Code oficial enviado no grupo
+          📲 Pagamento via Pix - Entre em contato com a comissão.
         </p>
       </section>
 
@@ -119,6 +123,38 @@ export default function RegulamentoPage() {
           👤 Igor Machado
           <br />
           📞 (71) 99607-1786
+          <br />
+          👤 Kinho
+          <br />
+          📞 (71) 98547-2438
+          <br />
+          👤 Rafael Maia
+          <br />
+          📞 (71) 99257-2452
+          <br />
+          👤 Junica
+          <br />
+          📞 (71) 98419-3915
+          <br />
+          👤 Valtemir Sena
+          <br />
+          📞 (71) 98826-1804
+          <br />
+          👤 Marcos Cruz
+          <br />
+          📞 (71) 99141-1998
+          <br />
+          👤 Felipe Santana
+          <br />
+          📞 (71) 99607-1786
+          <br />
+          👤 Felippo Maia
+          <br />
+          📞 (71) 98722-5525
+          <br />
+          👤 Victor Lapoza
+          <br />
+          📞 (71) 99376-7771
           <br />
           📲 Instagram: @securitychampionsleague
         </p>
@@ -132,6 +168,7 @@ export default function RegulamentoPage() {
           📱 Informações oficiais no grupo do WhatsApp
           <br />
           📸 Resultados, fotos e vídeos no Instagram oficial
+          (@securitychampionsleague)
         </p>
       </section>
 
