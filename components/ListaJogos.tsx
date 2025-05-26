@@ -175,11 +175,27 @@ export function ListaJogos({ jogos }: Props) {
                         <div className="text-center sm:text-left w-full">
                           <p className="text-lg font-semibold text-gray-800">
                             {jogo.equipeCasa.nome}{' '}
-                            <span className="text-blue-600 font-bold">
+                            <span
+                              className={
+                                jogo.golsCasa > jogo.golsFora
+                                  ? 'text-green-600 font-bold'
+                                  : jogo.golsCasa < jogo.golsFora
+                                  ? 'text-red-600 font-bold'
+                                  : 'text-blue-600 font-bold'
+                              }
+                            >
                               {jogo.golsCasa}
                             </span>{' '}
                             x{' '}
-                            <span className="text-red-600 font-bold">
+                            <span
+                              className={
+                                jogo.golsFora > jogo.golsCasa
+                                  ? 'text-green-600 font-bold'
+                                  : jogo.golsFora < jogo.golsCasa
+                                  ? 'text-red-600 font-bold'
+                                  : 'text-blue-600 font-bold'
+                              }
+                            >
                               {jogo.golsFora}
                             </span>{' '}
                             {jogo.equipeFora.nome}
